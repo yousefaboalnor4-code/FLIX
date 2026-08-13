@@ -37,7 +37,7 @@ header{
     height: 60px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     padding: 0 16px;
     z-index: 30;
     background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
@@ -54,23 +54,14 @@ header * { pointer-events: auto; }
     -webkit-text-fill-color: transparent;
 }
 
-.sound-toggle {
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: #fff;
-    font-size: 13px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-}
-
+/* Feed View */
 .feed{
     height: 100vh;
     width: 100%;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     scrollbar-width: none;
+    display: block;
 }
 .feed::-webkit-scrollbar { display: none; }
 
@@ -208,6 +199,7 @@ header * { pointer-events: auto; }
     background: var(--primary);
 }
 
+/* Bottom Nav */
 .bottom-nav{
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -229,6 +221,7 @@ header * { pointer-events: auto; }
     flex-direction: column;
     align-items: center;
     gap: 3px;
+    transition: color 0.2s;
 }
 .nav-item span{ font-size: 20px; }
 .nav-item.active{ color: white; }
@@ -242,6 +235,115 @@ header * { pointer-events: auto; }
     font-size: 22px;
 }
 
+/* Profile View */
+.profile-view {
+    display: none;
+    height: 100vh;
+    width: 100%;
+    overflow-y: auto;
+    background: var(--bg-dark);
+    padding: 70px 16px 85px;
+}
+.profile-view.active { display: block; }
+
+.profile-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 24px;
+}
+.profile-avatar {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    box-shadow: 0 4px 20px rgba(255, 23, 68, 0.3);
+    margin-bottom: 12px;
+}
+.profile-name { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
+.profile-tag { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
+.profile-bio { font-size: 13px; color: #ddd; max-width: 320px; line-height: 1.5; margin-bottom: 16px; }
+
+.profile-btn {
+    background: #222;
+    border: 1px solid #333;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.profile-stats {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    margin-bottom: 24px;
+    border-top: 1px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+    padding: 14px 0;
+}
+.stat-box { text-align: center; }
+.stat-num { font-size: 18px; font-weight: bold; }
+.stat-lbl { font-size: 12px; color: var(--text-muted); }
+
+.grid-title {
+    font-size: 15px;
+    font-weight: bold;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.video-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+.grid-item {
+    position: relative;
+    aspect-ratio: 9/16;
+    background: #181818;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.grid-item video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.grid-meta {
+    position: absolute;
+    bottom: 6px;
+    left: 6px;
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+}
+.grid-delete-btn {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #ff5252;
+    border: none;
+    border-radius: 50%;
+    width: 26px; height: 26px;
+    font-size: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modals and Sheets */
 .full-modal{
     display: none;
     position: fixed;
@@ -401,11 +503,37 @@ header * { pointer-events: auto; }
 
 <header>
     <div class="logo">FLIX</div>
-    <button class="sound-toggle" id="soundBtn" onclick="toggleSound()">🔊 الصوت: مفتوح</button>
 </header>
 
+<!-- Main Feed -->
 <div class="feed" id="feed"></div>
 
+<!-- Profile Page -->
+<div class="profile-view" id="profileView">
+    <div class="profile-card">
+        <div class="profile-avatar" id="profileAvatar">👤</div>
+        <div class="profile-name" id="profileNameDisplay">المستخدم</div>
+        <div class="profile-tag" id="profileTagDisplay">@user</div>
+        <div class="profile-bio" id="profileBioDisplay">مرحباً بك في صفحتي على FLIX ✨</div>
+        <button class="profile-btn" onclick="editProfile()">✏️ تعديل الحساب</button>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-box">
+            <div class="stat-num" id="statVideos">0</div>
+            <div class="stat-lbl">الفيديوهات</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-num" id="statLikes">0</div>
+            <div class="stat-lbl">الإعجابات</div>
+        </div>
+    </div>
+
+    <div class="grid-title">📹 فيديوهاتي المنشورة</div>
+    <div class="video-grid" id="profileVideoGrid"></div>
+</div>
+
+<!-- Bottom Navigation Bar -->
 <div class="bottom-nav">
     <div class="nav-item active" id="navHome" onclick="switchTab('home')">
         <span>🏠</span>الرئيسية
@@ -413,12 +541,12 @@ header * { pointer-events: auto; }
     <div class="nav-item add-btn" onclick="openUploadModal()">
         <span>＋</span>
     </div>
-    <div class="nav-item" id="navProfile" onclick="changeName()">
-        <span id="navAuthIcon">👤</span>
-        <span id="navAuthLabel">اسمي</span>
+    <div class="nav-item" id="navProfile" onclick="switchTab('profile')">
+        <span>👤</span>صفحتي
     </div>
 </div>
 
+<!-- Comments Sheet -->
 <div class="comment-sheet" id="commentSheet">
     <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #282828;">
         <h3>التعليقات</h3>
@@ -431,9 +559,10 @@ header * { pointer-events: auto; }
     </div>
 </div>
 
+<!-- Upload Video Modal -->
 <div class="full-modal" id="uploadModal">
     <div class="modal-header">
-        <h2>رفع فيديو من جهازك</h2>
+        <h2>رفع فيديو جديد</h2>
         <button class="close-btn" onclick="closeUploadModal()">⬅ رجوع</button>
     </div>
 
@@ -443,14 +572,13 @@ header * { pointer-events: auto; }
         <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
             <span style="font-size: 40px; display: block; margin-bottom: 10px;">📹</span>
             <b style="font-size: 15px;">اضغط هنا لاختيار فيديو من جهازك</b>
-            <p style="font-size: 12px; color: #888; margin-top: 6px;">يدعم جميع صيغ الفيديو مباشرة</p>
+            <p style="font-size: 12px; color: #888; margin-top: 6px;">يدعم جميع صيغ الفيديو</p>
         </div>
 
         <div class="preview-container" id="previewContainer">
             <video id="uploadPreview" controls playsinline></video>
         </div>
 
-        <input type="text" id="uploaderNameInput" class="upload-input" placeholder="اسمك (اختياري)...">
         <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو..."></textarea>
 
         <div class="upload-status" id="uploadStatus">جاري حفظ الفيديو...</div>
@@ -461,13 +589,14 @@ header * { pointer-events: auto; }
 <script>
 let db;
 let realPosts = [];
-let isMuted = false;
 let activeVideoId = null;
 let selectedVideoFile = null;
-let myName = localStorage.getItem('flix_my_name') || "";
+let currentTab = 'home';
 
-updateProfileLabel();
+let myName = localStorage.getItem('flix_my_name') || "مستخدم جديد";
+let myBio = localStorage.getItem('flix_my_bio') || "مرحباً بك في صفحتي على FLIX ✨";
 
+// Initialize IndexedDB
 const request = indexedDB.open("FlixRealStorageDB", 1);
 request.onupgradeneeded = (e) => {
     db = e.target.result;
@@ -481,11 +610,11 @@ request.onsuccess = (e) => {
     loadVideosFromDB();
 };
 
+// Intersection Observer for autoplaying visible video
 const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         const vid = entry.target;
-        if (entry.isIntersecting) {
-            vid.muted = isMuted;
+        if (entry.isIntersecting && currentTab === 'home') {
             vid.play().catch(() => {
                 vid.muted = true;
                 vid.play().catch(() => {});
@@ -505,6 +634,7 @@ function loadVideosFromDB() {
     getAll.onsuccess = () => {
         realPosts = (getAll.result || []).sort((a, b) => b.createdAt - a.createdAt);
         renderFeed();
+        if (currentTab === 'profile') renderProfile();
     };
 }
 
@@ -517,17 +647,44 @@ function saveVideoToDB(postData, callback) {
     };
 }
 
-function updateProfileLabel() {
-    const label = document.getElementById('navAuthLabel');
-    label.textContent = myName ? myName.split(' ')[0] : "اسمي";
+function deleteVideoFromDB(postId) {
+    if (!confirm("هل أنت متأكد من رغبتك في حذف هذا الفيديو نهائياً؟")) return;
+    
+    const tx = db.transaction("videos", "readwrite");
+    const store = tx.objectStore("videos");
+    store.delete(postId);
+    tx.oncomplete = () => {
+        realPosts = realPosts.filter(p => p.id !== postId);
+        renderFeed();
+        renderProfile();
+    };
 }
 
-function changeName() {
-    const name = prompt("أدخل اسمك الحقيقي ليظهر على تعليقاتك وفيديوهاتك:", myName);
-    if (name !== null) {
-        myName = name.trim();
-        localStorage.setItem('flix_my_name', myName);
-        updateProfileLabel();
+function switchTab(tab) {
+    currentTab = tab;
+    const feed = document.getElementById('feed');
+    const profileView = document.getElementById('profileView');
+    const navHome = document.getElementById('navHome');
+    const navProfile = document.getElementById('navProfile');
+
+    if (tab === 'home') {
+        feed.style.display = 'block';
+        profileView.classList.remove('active');
+        navHome.classList.add('active');
+        navProfile.classList.remove('active');
+        feed.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Resume playing visible video
+        const visibleVid = feed.querySelector('.video-card video');
+        if (visibleVid) visibleVid.play().catch(()=>{});
+    } else if (tab === 'profile') {
+        // Pause all videos
+        document.querySelectorAll('.video-player').forEach(v => v.pause());
+        feed.style.display = 'none';
+        profileView.classList.add('active');
+        navHome.classList.remove('active');
+        navProfile.classList.add('active');
+        renderProfile();
     }
 }
 
@@ -540,7 +697,7 @@ function renderFeed() {
             <div class="empty-feed">
                 <span>🎬</span>
                 <h3>لا توجد فيديوهات حتى الآن</h3>
-                <p>الموقع جاهز وخالٍ تماماً من أي محتوى وهمي. اضغط على الزر لرفع أول فيديو حقيقي لك!</p>
+                <p>اضغط على زر ( ＋ ) في الأسفل لرفع أول فيديو لك في المنصة!</p>
                 <button class="btn-start" onclick="openUploadModal()">＋ رفع فيديو الآن</button>
             </div>
         `;
@@ -602,6 +759,62 @@ function renderFeed() {
     });
 }
 
+function renderProfile() {
+    document.getElementById('profileNameDisplay').textContent = myName;
+    document.getElementById('profileTagDisplay').textContent = `@${myName.toLowerCase().replace(/\s+/g, '_')}`;
+    document.getElementById('profileBioDisplay').textContent = myBio;
+
+    const myPosts = realPosts.filter(p => p.isMine || p.authorName === myName);
+    const totalLikes = myPosts.reduce((acc, curr) => acc + (curr.likes || 0), 0);
+
+    document.getElementById('statVideos').textContent = myPosts.length;
+    document.getElementById('statLikes').textContent = totalLikes;
+
+    const grid = document.getElementById('profileVideoGrid');
+    grid.innerHTML = '';
+
+    if (myPosts.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px 0; color:#777; font-size:13px;">لم تقم بنشر أي فيديو بعد 📷</div>`;
+        return;
+    }
+
+    myPosts.forEach(post => {
+        const item = document.createElement('div');
+        item.className = 'grid-item';
+        const vidUrl = URL.createObjectURL(post.videoBlob);
+        
+        item.innerHTML = `
+            <video src="${vidUrl}#t=0.5" preload="metadata" muted></video>
+            <div class="grid-meta">♥ ${post.likes}</div>
+            <button class="grid-delete-btn" onclick="event.stopPropagation(); deleteVideoFromDB('${post.id}')" title="حذف">🗑</button>
+        `;
+
+        item.onclick = () => {
+            switchTab('home');
+            const target = document.getElementById(post.id);
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+        };
+
+        grid.appendChild(item);
+    });
+}
+
+function editProfile() {
+    const newName = prompt("أدخل اسمك الشخصي الجديد:", myName);
+    if (newName && newName.trim()) {
+        myName = newName.trim();
+        localStorage.setItem('flix_my_name', myName);
+    }
+
+    const newBio = prompt("اكتب نبذة عنك (Bio):", myBio);
+    if (newBio !== null) {
+        myBio = newBio.trim() || "مرحباً بك في صفحتي على FLIX ✨";
+        localStorage.setItem('flix_my_bio', myBio);
+    }
+
+    renderProfile();
+}
+
 function showHeartAnimation(postId) {
     const heart = document.getElementById(`heart_${postId}`);
     if (heart) {
@@ -625,12 +838,7 @@ function toggleLike(postId) {
         count.textContent = post.likes;
     }
     if (post.isLiked) showHeartAnimation(postId);
-}
-
-function toggleSound() {
-    isMuted = !isMuted;
-    document.querySelectorAll('.video-player').forEach(v => v.muted = isMuted);
-    document.getElementById('soundBtn').textContent = isMuted ? "🔇 الصوت: مغلق" : "🔊 الصوت: مفتوح";
+    if (currentTab === 'profile') renderProfile();
 }
 
 function sharePost() {
@@ -675,17 +883,6 @@ function submitComment() {
     const text = input.value.trim();
     if (!text || !activeVideoId) return;
 
-    if (!myName) {
-        const ask = prompt("أدخل اسمك ليظهر مع التعليق:");
-        if (ask && ask.trim()) {
-            myName = ask.trim();
-            localStorage.setItem('flix_my_name', myName);
-            updateProfileLabel();
-        } else {
-            myName = "زائر";
-        }
-    }
-
     const post = realPosts.find(p => p.id === activeVideoId);
     if (post) {
         post.comments.push({ user: myName, text: text, time: Date.now() });
@@ -699,8 +896,6 @@ function submitComment() {
 }
 
 function openUploadModal() {
-    const uploaderInput = document.getElementById('uploaderNameInput');
-    if (myName) uploaderInput.value = myName;
     document.getElementById('uploadModal').classList.add('active');
 }
 
@@ -731,13 +926,6 @@ function publishVideo() {
 
     const publishBtn = document.getElementById('publishBtn');
     const statusText = document.getElementById('uploadStatus');
-    const uploaderNameVal = document.getElementById('uploaderNameInput').value.trim();
-    
-    if (uploaderNameVal) {
-        myName = uploaderNameVal;
-        localStorage.setItem('flix_my_name', myName);
-        updateProfileLabel();
-    }
 
     publishBtn.disabled = true;
     statusText.style.display = 'block';
@@ -746,7 +934,8 @@ function publishVideo() {
         id: "vid_" + Date.now(),
         videoBlob: selectedVideoFile,
         caption: document.getElementById('videoCaption').value.trim(),
-        authorName: uploaderNameVal || myName || "مستخدم",
+        authorName: myName,
+        isMine: true,
         likes: 0,
         isLiked: false,
         comments: [],
@@ -757,15 +946,8 @@ function publishVideo() {
         realPosts.unshift(newPost);
         renderFeed();
         closeUploadModal();
-        alert("تم حفظ ونشر الفيديو بنجاح! 🚀");
+        alert("تم حفظ ونشر الفيديو في صفحتك بنجاح! 🚀");
     });
-}
-
-function switchTab(tab) {
-    if (tab === 'home') {
-        const feed = document.getElementById('feed');
-        feed.scrollTo({ top: 0, behavior: 'smooth' });
-    }
 }
 </script>
 
