@@ -10,8 +10,9 @@
     --primary: #ff1744;
     --primary-gradient: linear-gradient(45deg, #ff1744, #ff5252);
     --bg-dark: #0a0a0a;
+    --bg-card: #161616;
     --text-main: #ffffff;
-    --text-muted: #aaaaaa;
+    --text-muted: #888888;
 }
 
 *{
@@ -31,22 +32,23 @@ body{
     width: 100vw;
 }
 
+/* Header */
 header{
     position: fixed;
     top: 0; left: 0; right: 0;
-    height: 60px;
+    height: 55px;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 16px;
+    padding: 0 20px;
     z-index: 30;
-    background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
+    background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
     pointer-events: none;
 }
 header * { pointer-events: auto; }
 
 .logo{
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 900;
     letter-spacing: 2px;
     background: var(--primary-gradient);
@@ -75,15 +77,15 @@ header * { pointer-events: auto; }
     padding: 24px;
     color: #bbb;
 }
-.empty-feed span { font-size: 65px; margin-bottom: 15px; }
-.empty-feed h3 { font-size: 20px; margin-bottom: 8px; color: #fff; }
-.empty-feed p { font-size: 14px; color: #888; max-width: 300px; line-height: 1.5; margin-bottom: 20px; }
+.empty-feed span { font-size: 55px; margin-bottom: 12px; }
+.empty-feed h3 { font-size: 18px; margin-bottom: 6px; color: #fff; }
+.empty-feed p { font-size: 13px; color: #888; max-width: 280px; line-height: 1.5; margin-bottom: 18px; }
 .empty-feed .btn-start {
     background: var(--primary-gradient);
     color: white;
     border: none;
-    padding: 13px 26px;
-    font-size: 15px;
+    padding: 12px 24px;
+    font-size: 14px;
     font-weight: bold;
     border-radius: 25px;
     cursor: pointer;
@@ -114,7 +116,7 @@ header * { pointer-events: auto; }
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
-    font-size: 90px;
+    font-size: 80px;
     z-index: 10;
     pointer-events: none;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
@@ -138,13 +140,14 @@ header * { pointer-events: auto; }
 .user-info{
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 8px;
+    margin-bottom: 6px;
+    cursor: pointer;
 }
-.username{ font-size: 16px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.username{ font-size: 15px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
 
 .description{
-    font-size: 14px;
+    font-size: 13px;
     max-width: 78%;
     line-height: 1.4;
     color: #eee;
@@ -152,24 +155,44 @@ header * { pointer-events: auto; }
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
+/* Actions Bar - TikTok Style */
 .actions{
     position: absolute;
     left: 12px;
     bottom: 95px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 14px;
     align-items: center;
     z-index: 20;
 }
+
+/* صورة الحساب على الفيديو زي تيك توك */
+.tiktok-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 2px solid white;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    margin-bottom: 6px;
+    position: relative;
+    transition: transform 0.15s;
+}
+.tiktok-avatar:active { transform: scale(0.9); }
 
 .action-btn{
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(5px);
     border: none;
     color: white;
-    font-size: 22px;
-    width: 48px; height: 48px;
+    font-size: 20px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -183,7 +206,7 @@ header * { pointer-events: auto; }
 .action-label{
     font-size: 11px;
     font-weight: 600;
-    margin-top: -12px;
+    margin-top: -10px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
@@ -203,7 +226,7 @@ header * { pointer-events: auto; }
 .bottom-nav{
     position: fixed;
     bottom: 0; left: 0; right: 0;
-    height: 65px;
+    height: 60px;
     background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255,255,255,0.08);
@@ -223,17 +246,86 @@ header * { pointer-events: auto; }
     gap: 3px;
     transition: color 0.2s;
 }
-.nav-item span{ font-size: 20px; }
-.nav-item.active{ color: white; }
+.nav-item span{ font-size: 19px; }
+.nav-item.active{ color: white; font-weight: bold; }
 
 .nav-item.add-btn span {
     background: var(--primary-gradient);
     color: white;
-    padding: 4px 16px;
+    padding: 3px 16px;
     border-radius: 12px;
     font-weight: bold;
+    font-size: 20px;
+}
+
+/* Search View */
+.search-view {
+    display: none;
+    height: 100vh;
+    width: 100%;
+    overflow-y: auto;
+    background: var(--bg-dark);
+    padding: 65px 16px 85px;
+}
+.search-view.active { display: block; }
+
+.search-input-box {
+    position: relative;
+    margin-bottom: 20px;
+}
+.search-input {
+    width: 100%;
+    background: #1c1c1c;
+    border: 1px solid #333;
+    border-radius: 25px;
+    color: white;
+    padding: 12px 20px 12px 42px;
+    font-size: 14px;
+    outline: none;
+}
+.search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #888;
+    font-size: 16px;
+}
+
+.users-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.user-search-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #141414;
+    padding: 12px 14px;
+    border-radius: 14px;
+    cursor: pointer;
+    border: 1px solid #222;
+    transition: background 0.2s;
+}
+.user-search-card:active { background: #202020; }
+.user-search-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.user-search-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--primary-gradient);
+    display: flex;
+    align-items: center;
+    justify-content: center;
     font-size: 22px;
 }
+.user-search-name { font-size: 14px; font-weight: bold; }
+.user-search-tag { font-size: 12px; color: var(--text-muted); }
 
 /* Profile View */
 .profile-view {
@@ -242,7 +334,7 @@ header * { pointer-events: auto; }
     width: 100%;
     overflow-y: auto;
     background: var(--bg-dark);
-    padding: 70px 16px 85px;
+    padding: 65px 16px 90px;
 }
 .profile-view.active { display: block; }
 
@@ -251,53 +343,60 @@ header * { pointer-events: auto; }
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-bottom: 24px;
+    margin-bottom: 16px;
 }
+/* صورة البروفايل المصغرة والأنيقة */
 .profile-avatar {
-    width: 90px; height: 90px;
+    width: 76px; height: 76px;
     border-radius: 50%;
     background: var(--primary-gradient);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
-    box-shadow: 0 4px 20px rgba(255, 23, 68, 0.3);
-    margin-bottom: 12px;
+    font-size: 34px;
+    box-shadow: 0 4px 16px rgba(255, 23, 68, 0.3);
+    margin-bottom: 10px;
+    border: 2px solid #333;
 }
-.profile-name { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
-.profile-tag { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; }
-.profile-bio { font-size: 13px; color: #ddd; max-width: 320px; line-height: 1.5; margin-bottom: 16px; }
+.profile-name { font-size: 19px; font-weight: 800; margin-bottom: 2px; }
+.profile-tag { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+.profile-bio { font-size: 13px; color: #ddd; max-width: 300px; line-height: 1.4; margin-bottom: 14px; }
 
 .profile-btn {
-    background: #222;
+    background: #1f1f1f;
     border: 1px solid #333;
     color: white;
-    padding: 8px 20px;
+    padding: 7px 20px;
     border-radius: 20px;
-    font-size: 13px;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
+}
+.profile-btn.follow-btn {
+    background: var(--primary-gradient);
+    border: none;
 }
 
 .profile-stats {
     display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 24px;
+    justify-content: space-around;
+    max-width: 300px;
+    margin: 0 auto 16px;
     border-top: 1px solid #1a1a1a;
     border-bottom: 1px solid #1a1a1a;
-    padding: 14px 0;
+    padding: 12px 0;
 }
 .stat-box { text-align: center; }
-.stat-num { font-size: 18px; font-weight: bold; }
-.stat-lbl { font-size: 12px; color: var(--text-muted); }
+.stat-num { font-size: 16px; font-weight: bold; }
+.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 .grid-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 .video-grid {
     display: grid;
@@ -319,31 +418,32 @@ header * { pointer-events: auto; }
 }
 .grid-meta {
     position: absolute;
-    bottom: 6px;
-    left: 6px;
-    font-size: 11px;
+    bottom: 5px;
+    left: 5px;
+    font-size: 10px;
+    font-weight: bold;
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 3px;
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 .grid-delete-btn {
     position: absolute;
-    top: 6px;
-    left: 6px;
-    background: rgba(0, 0, 0, 0.7);
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.75);
     color: #ff5252;
     border: none;
     border-radius: 50%;
     width: 26px; height: 26px;
-    font-size: 12px;
+    font-size: 11px;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-/* Modals and Sheets */
+/* Modals */
 .full-modal{
     display: none;
     position: fixed;
@@ -359,7 +459,7 @@ header * { pointer-events: auto; }
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 20px;
+    padding: 14px 18px;
     position: sticky;
     top: 0;
     background: var(--bg-dark);
@@ -374,10 +474,11 @@ header * { pointer-events: auto; }
     padding: 6px 14px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: bold;
 }
 
+/* Comments Sheet */
 .comment-sheet{
     position: fixed;
     bottom: -100%; left: 0; right: 0;
@@ -397,7 +498,7 @@ header * { pointer-events: auto; }
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 .comment-item{ font-size: 13px; line-height: 1.4; }
 .comment-item strong{ color: #aaa; font-size: 12px; display: block; margin-bottom: 2px; }
@@ -430,17 +531,17 @@ header * { pointer-events: auto; }
 
 .upload-box {
     max-width: 480px;
-    margin: 30px auto;
-    padding: 0 20px;
+    margin: 25px auto;
+    padding: 0 18px;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 15px;
 }
 
 .file-dropzone {
     border: 2px dashed #444;
     border-radius: 16px;
-    padding: 35px 20px;
+    padding: 30px 16px;
     text-align: center;
     cursor: pointer;
     background: #141414;
@@ -450,24 +551,12 @@ header * { pointer-events: auto; }
     display: none;
     border-radius: 12px;
     overflow: hidden;
-    max-height: 260px;
+    max-height: 250px;
     background: #000;
 }
-.preview-container video { width: 100%; max-height: 260px; object-fit: contain; }
+.preview-container video { width: 100%; max-height: 250px; object-fit: contain; }
 
-.upload-textarea {
-    width: 100%; height: 80px;
-    background: #181818;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: white;
-    padding: 12px;
-    outline: none;
-    resize: none;
-    font-size: 14px;
-}
-
-.upload-input {
+.upload-textarea, .edit-input {
     width: 100%;
     background: #181818;
     border: 1px solid #333;
@@ -477,6 +566,7 @@ header * { pointer-events: auto; }
     outline: none;
     font-size: 14px;
 }
+.upload-textarea { height: 80px; resize: none; }
 
 .btn-publish {
     background: var(--primary-gradient);
@@ -484,18 +574,11 @@ header * { pointer-events: auto; }
     color: white;
     padding: 14px;
     border-radius: 14px;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: bold;
     cursor: pointer;
 }
 .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
-
-.upload-status {
-    text-align: center;
-    font-size: 13px;
-    color: #00e676;
-    display: none;
-}
 </style>
 </head>
 
@@ -508,14 +591,26 @@ header * { pointer-events: auto; }
 <!-- Main Feed -->
 <div class="feed" id="feed"></div>
 
-<!-- Profile Page -->
+<!-- Search View (صفحة البحث عن الحسابات) -->
+<div class="search-view" id="searchView">
+    <div class="search-input-box">
+        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن اسم مستخدم أو حساب..." oninput="handleSearch(this.value)">
+        <span class="search-icon">🔍</span>
+    </div>
+    <div class="grid-title">👥 الحسابات المقترحة</div>
+    <div class="users-list" id="usersList"></div>
+</div>
+
+<!-- Profile Page View (الصفحة الشخصية) -->
 <div class="profile-view" id="profileView">
     <div class="profile-card">
         <div class="profile-avatar" id="profileAvatar">👤</div>
         <div class="profile-name" id="profileNameDisplay">المستخدم</div>
         <div class="profile-tag" id="profileTagDisplay">@user</div>
         <div class="profile-bio" id="profileBioDisplay">مرحباً بك في صفحتي على FLIX ✨</div>
-        <button class="profile-btn" onclick="editProfile()">✏️ تعديل الحساب</button>
+        <div id="profileActionContainer">
+            <button class="profile-btn" id="editProfileBtn" onclick="openEditProfileModal()">✏️ تعديل الحساب</button>
+        </div>
     </div>
 
     <div class="profile-stats">
@@ -529,7 +624,7 @@ header * { pointer-events: auto; }
         </div>
     </div>
 
-    <div class="grid-title">📹 فيديوهاتي المنشورة</div>
+    <div class="grid-title" id="profileGridTitle">📹 الفيديوهات المنشورة</div>
     <div class="video-grid" id="profileVideoGrid"></div>
 </div>
 
@@ -538,17 +633,40 @@ header * { pointer-events: auto; }
     <div class="nav-item active" id="navHome" onclick="switchTab('home')">
         <span>🏠</span>الرئيسية
     </div>
+    <div class="nav-item" id="navSearch" onclick="switchTab('search')">
+        <span>🔍</span>بحث
+    </div>
     <div class="nav-item add-btn" onclick="openUploadModal()">
         <span>＋</span>
     </div>
-    <div class="nav-item" id="navProfile" onclick="switchTab('profile')">
+    <div class="nav-item" id="navProfile" onclick="openMyProfile()">
         <span>👤</span>صفحتي
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div class="full-modal" id="editProfileModal">
+    <div class="modal-header">
+        <h2>تعديل البيانات الشخصية</h2>
+        <button class="close-btn" onclick="closeEditProfileModal()">✕ إلغاء</button>
+    </div>
+    <div class="upload-box">
+        <label style="font-size:13px; color:#aaa;">الأيقونة أو الإيموجي:</label>
+        <input type="text" id="editAvatarInput" class="edit-input" maxlength="2" placeholder="مثال: 👤 أو 👑 أو 🚀">
+
+        <label style="font-size:13px; color:#aaa;">الاسم الشخصي:</label>
+        <input type="text" id="editNameInput" class="edit-input" placeholder="اسمك">
+
+        <label style="font-size:13px; color:#aaa;">النبذة التعريفية (Bio):</label>
+        <textarea id="editBioInput" class="upload-textarea" placeholder="اكتب نبذة عنك..."></textarea>
+
+        <button class="btn-publish" onclick="saveProfileData()">💾 حفظ التعديلات</button>
     </div>
 </div>
 
 <!-- Comments Sheet -->
 <div class="comment-sheet" id="commentSheet">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #282828;">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #282828;">
         <h3>التعليقات</h3>
         <button class="close-btn" onclick="closeComments()">✕ إغلاق</button>
     </div>
@@ -570,18 +688,17 @@ header * { pointer-events: auto; }
         <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="handleFileSelect(event)">
         
         <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
-            <span style="font-size: 40px; display: block; margin-bottom: 10px;">📹</span>
-            <b style="font-size: 15px;">اضغط هنا لاختيار فيديو من جهازك</b>
-            <p style="font-size: 12px; color: #888; margin-top: 6px;">يدعم جميع صيغ الفيديو</p>
+            <span style="font-size: 38px; display: block; margin-bottom: 8px;">📹</span>
+            <b style="font-size: 14px;">اضغط هنا لاختيار فيديو من جهازك</b>
+            <p style="font-size: 12px; color: #888; margin-top: 5px;">يدعم جميع صيغ الفيديو</p>
         </div>
 
         <div class="preview-container" id="previewContainer">
-            <video id="uploadPreview" controls playsinline></video>
+            <video id="uploadPreview" playsinline autoplay loop></video>
         </div>
 
         <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو..."></textarea>
 
-        <div class="upload-status" id="uploadStatus">جاري حفظ الفيديو...</div>
         <button id="publishBtn" class="btn-publish" onclick="publishVideo()" disabled>نشر الفيديو 🚀</button>
     </div>
 </div>
@@ -592,9 +709,26 @@ let realPosts = [];
 let activeVideoId = null;
 let selectedVideoFile = null;
 let currentTab = 'home';
+let viewedUserName = null; // الحساب المعروض حالياً
 
 let myName = localStorage.getItem('flix_my_name') || "مستخدم جديد";
+let myAvatar = localStorage.getItem('flix_my_avatar') || "👤";
 let myBio = localStorage.getItem('flix_my_bio') || "مرحباً بك في صفحتي على FLIX ✨";
+
+// حل مشكلة كتم الصوت عند عمل ريستارت أو ريفريش للموقع
+function forceUnmuteAudio() {
+    document.querySelectorAll('video').forEach(v => {
+        v.muted = false;
+    });
+    const activeVid = document.querySelector('.video-card video');
+    if (activeVid) {
+        activeVid.muted = false;
+        activeVid.play().catch(()=>{});
+    }
+}
+window.addEventListener('pointerdown', forceUnmuteAudio, { once: true });
+window.addEventListener('touchstart', forceUnmuteAudio, { once: true });
+window.addEventListener('click', forceUnmuteAudio, { once: true });
 
 // Initialize IndexedDB
 const request = indexedDB.open("FlixRealStorageDB", 1);
@@ -610,14 +744,24 @@ request.onsuccess = (e) => {
     loadVideosFromDB();
 };
 
-// Intersection Observer for autoplaying visible video
+// تشغيل الفيديو مع الصوت تلقائياً
 const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         const vid = entry.target;
         if (entry.isIntersecting && currentTab === 'home') {
+            vid.muted = false;
             vid.play().catch(() => {
                 vid.muted = true;
-                vid.play().catch(() => {});
+                vid.play().then(() => {
+                    // فتح الصوت فوراً عند أول تفاعل
+                    const unmuteOnInteraction = () => {
+                        vid.muted = false;
+                        window.removeEventListener('click', unmuteOnInteraction);
+                        window.removeEventListener('touchstart', unmuteOnInteraction);
+                    };
+                    window.addEventListener('click', unmuteOnInteraction);
+                    window.addEventListener('touchstart', unmuteOnInteraction);
+                }).catch(()=>{});
             });
         } else {
             vid.pause();
@@ -634,7 +778,8 @@ function loadVideosFromDB() {
     getAll.onsuccess = () => {
         realPosts = (getAll.result || []).sort((a, b) => b.createdAt - a.createdAt);
         renderFeed();
-        if (currentTab === 'profile') renderProfile();
+        renderSearchList('');
+        if (currentTab === 'profile') renderProfile(viewedUserName || myName);
     };
 }
 
@@ -648,7 +793,7 @@ function saveVideoToDB(postData, callback) {
 }
 
 function deleteVideoFromDB(postId) {
-    if (!confirm("هل أنت متأكد من رغبتك في حذف هذا الفيديو نهائياً؟")) return;
+    if (!confirm("هل أنت متأكد من حذف هذا الفيديو نهائياً؟")) return;
     
     const tx = db.transaction("videos", "readwrite");
     const store = tx.objectStore("videos");
@@ -656,36 +801,61 @@ function deleteVideoFromDB(postId) {
     tx.oncomplete = () => {
         realPosts = realPosts.filter(p => p.id !== postId);
         renderFeed();
-        renderProfile();
+        renderProfile(viewedUserName || myName);
     };
 }
 
 function switchTab(tab) {
     currentTab = tab;
     const feed = document.getElementById('feed');
+    const searchView = document.getElementById('searchView');
     const profileView = document.getElementById('profileView');
+    
     const navHome = document.getElementById('navHome');
+    const navSearch = document.getElementById('navSearch');
     const navProfile = document.getElementById('navProfile');
+
+    // إخفاء الكل
+    feed.style.display = 'none';
+    searchView.classList.remove('active');
+    profileView.classList.remove('active');
+    navHome.classList.remove('active');
+    navSearch.classList.remove('active');
+    navProfile.classList.remove('active');
+
+    // إيقاف الفيديوهات عند الخروج من الرئيسية
+    document.querySelectorAll('.video-player').forEach(v => v.pause());
 
     if (tab === 'home') {
         feed.style.display = 'block';
-        profileView.classList.remove('active');
         navHome.classList.add('active');
-        navProfile.classList.remove('active');
         feed.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Resume playing visible video
         const visibleVid = feed.querySelector('.video-card video');
-        if (visibleVid) visibleVid.play().catch(()=>{});
+        if (visibleVid) {
+            visibleVid.muted = false;
+            visibleVid.play().catch(()=>{});
+        }
+    } else if (tab === 'search') {
+        searchView.classList.add('active');
+        navSearch.classList.add('active');
+        renderSearchList(document.getElementById('searchInput').value);
     } else if (tab === 'profile') {
-        // Pause all videos
-        document.querySelectorAll('.video-player').forEach(v => v.pause());
-        feed.style.display = 'none';
         profileView.classList.add('active');
-        navHome.classList.remove('active');
         navProfile.classList.add('active');
-        renderProfile();
     }
+}
+
+function openMyProfile() {
+    viewedUserName = myName;
+    switchTab('profile');
+    renderProfile(myName);
+}
+
+function viewUserProfile(username) {
+    viewedUserName = username;
+    switchTab('profile');
+    renderProfile(username);
 }
 
 function renderFeed() {
@@ -697,7 +867,7 @@ function renderFeed() {
             <div class="empty-feed">
                 <span>🎬</span>
                 <h3>لا توجد فيديوهات حتى الآن</h3>
-                <p>اضغط على زر ( ＋ ) في الأسفل لرفع أول فيديو لك في المنصة!</p>
+                <p>اضغط على زر ( ＋ ) في الأسفل لرفع أول فيديو لك!</p>
                 <button class="btn-start" onclick="openUploadModal()">＋ رفع فيديو الآن</button>
             </div>
         `;
@@ -710,18 +880,29 @@ function renderFeed() {
         card.className = 'video-card';
         card.id = post.id;
         
+        const authorAvatar = post.authorAvatar || '👤';
+
         card.innerHTML = `
-            <video class="video-player" loop playsinline preload="metadata" src="${videoSrc}"></video>
+            <video class="video-player" loop playsinline src="${videoSrc}"></video>
             <div class="heart-anim" id="heart_${post.id}">❤️</div>
             <div class="content">
-                <div class="user-info"><span class="username">@${post.authorName || 'مستخدم'}</span></div>
+                <div class="user-info" onclick="viewUserProfile('${post.authorName}')">
+                    <span class="username">@${post.authorName || 'مستخدم'}</span>
+                </div>
                 <p class="description">${post.caption || ''}</p>
             </div>
             <div class="actions">
+                <!-- صورة الحساب تيك توك ستايل قابلة للضغط لفتح البروفايل -->
+                <div class="tiktok-avatar" onclick="viewUserProfile('${post.authorName}')" title="عرض البروفايل">
+                    ${authorAvatar}
+                </div>
+
                 <button class="action-btn ${post.isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">♥</button>
                 <div class="action-label" id="like_count_${post.id}">${post.likes}</div>
+                
                 <button class="action-btn" onclick="openComments('${post.id}')">💬</button>
                 <div class="action-label" id="comment_count_${post.id}">${post.comments.length}</div>
+                
                 <button class="action-btn" onclick="sharePost()">↗</button>
                 <div class="action-label">مشاركة</div>
             </div>
@@ -729,6 +910,7 @@ function renderFeed() {
         `;
 
         const vid = card.querySelector('video');
+        vid.muted = false;
         videoObserver.observe(vid);
 
         vid.ontimeupdate = () => {
@@ -740,7 +922,7 @@ function renderFeed() {
 
         let lastTap = 0;
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.actions')) return;
+            if (e.target.closest('.actions') || e.target.closest('.user-info')) return;
             
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
@@ -749,6 +931,7 @@ function renderFeed() {
                 if (!post.isLiked) toggleLike(post.id);
                 showHeartAnimation(post.id);
             } else {
+                vid.muted = false;
                 if (vid.paused) vid.play();
                 else vid.pause();
             }
@@ -759,26 +942,98 @@ function renderFeed() {
     });
 }
 
-function renderProfile() {
-    document.getElementById('profileNameDisplay').textContent = myName;
-    document.getElementById('profileTagDisplay').textContent = `@${myName.toLowerCase().replace(/\s+/g, '_')}`;
-    document.getElementById('profileBioDisplay').textContent = myBio;
+/* محرك البحث عن الحسابات */
+function handleSearch(query) {
+    renderSearchList(query);
+}
 
-    const myPosts = realPosts.filter(p => p.isMine || p.authorName === myName);
-    const totalLikes = myPosts.reduce((acc, curr) => acc + (curr.likes || 0), 0);
+function renderSearchList(query) {
+    const list = document.getElementById('usersList');
+    list.innerHTML = '';
 
-    document.getElementById('statVideos').textContent = myPosts.length;
+    // جمع كل الحسابات من الفيديوهات + حسابي الشخصي
+    const usersMap = new Map();
+    usersMap.set(myName, { name: myName, avatar: myAvatar, bio: myBio });
+
+    realPosts.forEach(p => {
+        if (!usersMap.has(p.authorName)) {
+            usersMap.set(p.authorName, {
+                name: p.authorName,
+                avatar: p.authorAvatar || '👤',
+                bio: p.authorBio || 'صانع محتوى على FLIX ✨'
+            });
+        }
+    });
+
+    const filtered = Array.from(usersMap.values()).filter(u => 
+        u.name.toLowerCase().includes(query.toLowerCase().trim())
+    );
+
+    if (filtered.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:#666;padding:40px 0;font-size:13px;">لم يتم العثور على حساب بهذا الاسم 🔍</div>`;
+        return;
+    }
+
+    filtered.forEach(u => {
+        const item = document.createElement('div');
+        item.className = 'user-search-card';
+        item.onclick = () => viewUserProfile(u.name);
+
+        item.innerHTML = `
+            <div class="user-search-left">
+                <div class="user-search-avatar">${u.avatar}</div>
+                <div>
+                    <div class="user-search-name">${u.name}</div>
+                    <div class="user-search-tag">@${u.name.toLowerCase().replace(/\s+/g, '_')}</div>
+                </div>
+            </div>
+            <button class="profile-btn" style="font-size:11px; padding:5px 14px;">عرض 👁️</button>
+        `;
+        list.appendChild(item);
+    });
+}
+
+/* عرض بروفايل أي شخص */
+function renderProfile(username) {
+    const isMe = (username === myName);
+    
+    // جلب بيانات الحساب
+    let userAvatar = isMe ? myAvatar : '👤';
+    let userBio = isMe ? myBio : 'صانع محتوى على FLIX ✨';
+
+    const userPost = realPosts.find(p => p.authorName === username);
+    if (!isMe && userPost) {
+        if (userPost.authorAvatar) userAvatar = userPost.authorAvatar;
+        if (userPost.authorBio) userBio = userPost.authorBio;
+    }
+
+    document.getElementById('profileAvatar').textContent = userAvatar;
+    document.getElementById('profileNameDisplay').textContent = username;
+    document.getElementById('profileTagDisplay').textContent = `@${username.toLowerCase().replace(/\s+/g, '_')}`;
+    document.getElementById('profileBioDisplay').textContent = userBio;
+
+    const actionContainer = document.getElementById('profileActionContainer');
+    if (isMe) {
+        actionContainer.innerHTML = `<button class="profile-btn" onclick="openEditProfileModal()">✏️ تعديل الحساب</button>`;
+    } else {
+        actionContainer.innerHTML = `<button class="profile-btn follow-btn" onclick="alert('تمت المتابعة بنجاح! 🔔')">➕ متابعة</button>`;
+    }
+
+    const userPosts = realPosts.filter(p => p.authorName === username || (isMe && p.isMine));
+    const totalLikes = userPosts.reduce((acc, curr) => acc + (curr.likes || 0), 0);
+
+    document.getElementById('statVideos').textContent = userPosts.length;
     document.getElementById('statLikes').textContent = totalLikes;
 
     const grid = document.getElementById('profileVideoGrid');
     grid.innerHTML = '';
 
-    if (myPosts.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px 0; color:#777; font-size:13px;">لم تقم بنشر أي فيديو بعد 📷</div>`;
+    if (userPosts.length === 0) {
+        grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 40px 0; color:#777; font-size:13px;">لا توجد فيديوهات منشورة حتى الآن 📷</div>`;
         return;
     }
 
-    myPosts.forEach(post => {
+    userPosts.forEach(post => {
         const item = document.createElement('div');
         item.className = 'grid-item';
         const vidUrl = URL.createObjectURL(post.videoBlob);
@@ -786,7 +1041,7 @@ function renderProfile() {
         item.innerHTML = `
             <video src="${vidUrl}#t=0.5" preload="metadata" muted></video>
             <div class="grid-meta">♥ ${post.likes}</div>
-            <button class="grid-delete-btn" onclick="event.stopPropagation(); deleteVideoFromDB('${post.id}')" title="حذف">🗑</button>
+            ${isMe ? `<button class="grid-delete-btn" onclick="event.stopPropagation(); deleteVideoFromDB('${post.id}')" title="حذف">🗑</button>` : ''}
         `;
 
         item.onclick = () => {
@@ -799,20 +1054,38 @@ function renderProfile() {
     });
 }
 
-function editProfile() {
-    const newName = prompt("أدخل اسمك الشخصي الجديد:", myName);
-    if (newName && newName.trim()) {
-        myName = newName.trim();
+function openEditProfileModal() {
+    document.getElementById('editAvatarInput').value = myAvatar;
+    document.getElementById('editNameInput').value = myName;
+    document.getElementById('editBioInput').value = myBio;
+    document.getElementById('editProfileModal').classList.add('active');
+}
+
+function closeEditProfileModal() {
+    document.getElementById('editProfileModal').classList.remove('active');
+}
+
+function saveProfileData() {
+    const avatar = document.getElementById('editAvatarInput').value.trim();
+    const name = document.getElementById('editNameInput').value.trim();
+    const bio = document.getElementById('editBioInput').value.trim();
+
+    if (avatar) {
+        myAvatar = avatar;
+        localStorage.setItem('flix_my_avatar', myAvatar);
+    }
+    if (name) {
+        myName = name;
         localStorage.setItem('flix_my_name', myName);
     }
-
-    const newBio = prompt("اكتب نبذة عنك (Bio):", myBio);
-    if (newBio !== null) {
-        myBio = newBio.trim() || "مرحباً بك في صفحتي على FLIX ✨";
+    if (bio) {
+        myBio = bio;
         localStorage.setItem('flix_my_bio', myBio);
     }
 
-    renderProfile();
+    renderProfile(myName);
+    renderFeed();
+    closeEditProfileModal();
 }
 
 function showHeartAnimation(postId) {
@@ -838,7 +1111,7 @@ function toggleLike(postId) {
         count.textContent = post.likes;
     }
     if (post.isLiked) showHeartAnimation(postId);
-    if (currentTab === 'profile') renderProfile();
+    if (currentTab === 'profile') renderProfile(viewedUserName || myName);
 }
 
 function sharePost() {
@@ -849,7 +1122,7 @@ function sharePost() {
             url: window.location.href
         }).catch(()=>{});
     } else {
-        alert("تم نسخ رابط المنصة للمشاركة! 🔗");
+        alert("تم نسخ رابط الفيديو والموقع بنجاح! 🔗");
     }
 }
 
@@ -905,7 +1178,6 @@ function closeUploadModal() {
     document.getElementById('dropzone').style.display = 'block';
     document.getElementById('previewContainer').style.display = 'none';
     document.getElementById('publishBtn').disabled = true;
-    document.getElementById('uploadStatus').style.display = 'none';
     document.getElementById('videoCaption').value = '';
 }
 
@@ -916,6 +1188,7 @@ function handleFileSelect(e) {
     selectedVideoFile = file;
     const preview = document.getElementById('uploadPreview');
     preview.src = URL.createObjectURL(file);
+    preview.muted = false;
     document.getElementById('dropzone').style.display = 'none';
     document.getElementById('previewContainer').style.display = 'block';
     document.getElementById('publishBtn').disabled = false;
@@ -925,16 +1198,15 @@ function publishVideo() {
     if (!selectedVideoFile) return;
 
     const publishBtn = document.getElementById('publishBtn');
-    const statusText = document.getElementById('uploadStatus');
-
     publishBtn.disabled = true;
-    statusText.style.display = 'block';
 
     const newPost = {
         id: "vid_" + Date.now(),
         videoBlob: selectedVideoFile,
         caption: document.getElementById('videoCaption').value.trim(),
         authorName: myName,
+        authorAvatar: myAvatar,
+        authorBio: myBio,
         isMine: true,
         likes: 0,
         isLiked: false,
@@ -945,8 +1217,9 @@ function publishVideo() {
     saveVideoToDB(newPost, () => {
         realPosts.unshift(newPost);
         renderFeed();
+        renderSearchList('');
         closeUploadModal();
-        alert("تم حفظ ونشر الفيديو في صفحتك بنجاح! 🚀");
+        alert("تم نشر الفيديو بنجاح! 🚀");
     });
 }
 </script>
