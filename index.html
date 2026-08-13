@@ -5,6 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FLIX - المنصة الكاملة</title>
 
+<!-- Firebase SDKs (v10 modular via CDN) -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, updateDoc, doc, arrayUnion, query, orderBy, onSnapshot, increment } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+    // 🔴 استبدل البيانات التالية ببيانات مشروعك من Firebase 🔴
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // تشغيل خدمات Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    // تصدير المتغيرات للنطاق العام لاستخدامها في التطبيق
+    window.db = db;
+    window.storage = storage;
+    window.auth = auth;
+    window.googleProvider = googleProvider;
+    window.fbMethods = {
+        collection, addDoc, getDocs, updateDoc, doc, arrayUnion, query, orderBy, onSnapshot, increment,
+        ref, uploadBytesResumable, getDownloadURL, signInWithPopup, signOut, onAuthStateChanged
+    };
+
+    // بدء تشغيل التطبيق بعد تحميل Firebase
+    window.initApp();
+</script>
+
 <style>
 :root {
     --primary: #ff1744;
@@ -31,12 +69,9 @@ body{
     width: 100vw;
 }
 
-/* Header */
 header{
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 60px;
     display: flex;
     align-items: center;
@@ -46,7 +81,6 @@ header{
     background: linear-gradient(180deg, rgba(0,0,0,0.85) 0%, transparent 100%);
     pointer-events: none;
 }
-
 header * { pointer-events: auto; }
 
 .logo{
@@ -58,19 +92,6 @@ header * { pointer-events: auto; }
     -webkit-text-fill-color: transparent;
 }
 
-.search-bar{
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.1);
-    outline: none;
-    color: white;
-    padding: 8px 14px;
-    border-radius: 20px;
-    width: 140px;
-    font-size: 13px;
-}
-
-/* Feed */
 .feed{
     height: 100vh;
     width: 100%;
@@ -90,10 +111,7 @@ header * { pointer-events: auto; }
     padding: 20px;
     color: #888;
 }
-
 .empty-feed span { font-size: 55px; margin-bottom: 15px; }
-.empty-feed h3 { color: #fff; font-size: 20px; margin-bottom: 8px; }
-.empty-feed p { font-size: 14px; margin-bottom: 22px; }
 
 .video-card{
     position: relative;
@@ -109,19 +127,15 @@ header * { pointer-events: auto; }
 
 .video-player{
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
     object-fit: cover;
     z-index: 1;
 }
 
-/* Like Animations */
 .heart-anim {
     position: absolute;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0);
     font-size: 85px;
     color: var(--primary);
@@ -135,7 +149,6 @@ header * { pointer-events: auto; }
     opacity: 1;
 }
 
-/* Video Info */
 .content{
     position: relative;
     z-index: 15;
@@ -144,7 +157,6 @@ header * { pointer-events: auto; }
     background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
     pointer-events: none;
 }
-
 .content * { pointer-events: auto; }
 
 .user-info{
@@ -153,33 +165,7 @@ header * { pointer-events: auto; }
     gap: 10px;
     margin-bottom: 8px;
 }
-
-.username{
-    font-size: 16px;
-    font-weight: 700;
-}
-
-.badge-owner {
-    background: #ffd700;
-    color: #000;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 8px;
-    font-weight: bold;
-}
-
-.follow-btn{
-    background: var(--primary);
-    border: none;
-    color: white;
-    padding: 5px 14px;
-    border-radius: 16px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.follow-btn.following { background: rgba(255,255,255,0.25); }
+.username{ font-size: 16px; font-weight: 700; }
 
 .description{
     font-size: 14px;
@@ -189,7 +175,6 @@ header * { pointer-events: auto; }
     word-break: break-word;
 }
 
-/* Actions sidebar */
 .actions{
     position: absolute;
     left: 12px;
@@ -207,8 +192,7 @@ header * { pointer-events: auto; }
     border: none;
     color: white;
     font-size: 24px;
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
@@ -216,7 +200,6 @@ header * { pointer-events: auto; }
     justify-content: center;
     transition: transform 0.15s, color 0.15s;
 }
-
 .action-btn:active { transform: scale(0.85); }
 .action-btn.liked { color: var(--primary); }
 
@@ -227,29 +210,21 @@ header * { pointer-events: auto; }
     text-shadow: 0 1px 3px rgba(0,0,0,0.8);
 }
 
-/* Progress bar */
 .progress-bar {
     position: absolute;
-    bottom: 65px;
-    left: 0;
-    width: 100%;
-    height: 3px;
+    bottom: 65px; left: 0;
+    width: 100%; height: 3px;
     background: rgba(255,255,255,0.2);
     z-index: 25;
 }
-
 .progress-fill {
-    height: 100%;
-    width: 0%;
+    height: 100%; width: 0%;
     background: var(--primary);
 }
 
-/* Bottom Navigation */
 .bottom-nav{
     position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    bottom: 0; left: 0; right: 0;
     height: 65px;
     background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(10px);
@@ -262,7 +237,6 @@ header * { pointer-events: auto; }
 
 .nav-item{
     color: var(--text-muted);
-    text-align: center;
     font-size: 11px;
     cursor: pointer;
     display: flex;
@@ -270,7 +244,6 @@ header * { pointer-events: auto; }
     align-items: center;
     gap: 3px;
 }
-
 .nav-item span{ font-size: 20px; }
 .nav-item.active{ color: white; }
 
@@ -283,95 +256,6 @@ header * { pointer-events: auto; }
     font-size: 22px;
 }
 
-/* Comment Sheet */
-.comment-sheet{
-    position: fixed;
-    bottom: -100%;
-    left: 0;
-    right: 0;
-    height: 60vh;
-    background: #181818;
-    border-radius: 20px 20px 0 0;
-    z-index: 60;
-    transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-}
-
-.comment-sheet.show{ bottom: 0; }
-
-.sheet-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 20px;
-    border-bottom: 1px solid #282828;
-}
-
-.close-btn{
-    background: #282828;
-    border: none;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-.comments-list{
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-}
-
-.comment-item{
-    font-size: 13px;
-    line-height: 1.4;
-}
-
-.comment-item strong{
-    color: #aaa;
-    font-size: 12px;
-    display: block;
-    margin-bottom: 2px;
-}
-
-.comment-input-area{
-    padding: 12px 16px;
-    background: #202020;
-    display: flex;
-    gap: 10px;
-}
-
-.comment-input{
-    flex: 1;
-    background: #2e2e2e;
-    border: none;
-    outline: none;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-}
-
-.send-btn{
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 0 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-/* Modals */
 .full-modal{
     display: none;
     position: fixed;
@@ -395,146 +279,65 @@ header * { pointer-events: auto; }
     border-bottom: 1px solid #222;
 }
 
-/* Profile UI */
-.profile-info {
-    text-align: center;
-    padding: 25px 20px 15px;
-}
-
-.avatar{
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #ff1744, #7c00ff);
-    margin: 0 auto 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 42px;
-    box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
-    overflow: hidden;
-    border: 2px solid #333;
-}
-
-.avatar img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.stats{
-    display: flex;
-    justify-content: center;
-    gap: 35px;
-    margin: 20px 0;
-}
-
-.stat b{ display: block; font-size: 18px; }
-.stat span{ font-size: 12px; color: var(--text-muted); }
-
-.profile-actions {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.btn-upload-profile {
-    background: var(--primary-gradient);
+.close-btn{
+    background: #282828;
     border: none;
     color: white;
-    padding: 10px 20px;
-    border-radius: 25px;
-    font-weight: bold;
+    padding: 6px 14px;
+    border-radius: 20px;
+    cursor: pointer;
     font-size: 13px;
-    cursor: pointer;
-}
-
-.btn-logout {
-    background: #252525;
-    border: 1px solid #333;
-    color: #ff5252;
-    padding: 10px 16px;
-    border-radius: 25px;
     font-weight: bold;
-    font-size: 13px;
-    cursor: pointer;
 }
 
-.profile-tabs {
-    border-top: 1px solid #252525;
-    padding: 12px 20px;
-    font-weight: bold;
-    font-size: 14px;
+.comment-sheet{
+    position: fixed;
+    bottom: -100%; left: 0; right: 0;
+    height: 60vh;
+    background: #181818;
+    border-radius: 20px 20px 0 0;
+    z-index: 60;
+    transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
     display: flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--primary);
+    flex-direction: column;
 }
+.comment-sheet.show{ bottom: 0; }
 
-.profile-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    padding: 2px;
-}
-
-.grid-item {
-    position: relative;
-    aspect-ratio: 9 / 16;
-    background: #222;
-    overflow: hidden;
-    cursor: pointer;
-}
-
-.grid-item video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.grid-item .views-count {
-    position: absolute;
-    bottom: 6px;
-    right: 6px;
-    font-size: 11px;
-    background: rgba(0,0,0,0.6);
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.empty-profile {
-    text-align: center;
-    color: #666;
-    padding: 40px 20px;
-    grid-column: span 3;
-    font-size: 14px;
-}
-
-/* Explore UI */
-.explore-tags {
-    display: flex;
-    gap: 8px;
+.comments-list{
+    flex: 1;
+    overflow-y: auto;
     padding: 15px 20px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
-.explore-tags::-webkit-scrollbar { display: none; }
+.comment-item{ font-size: 13px; line-height: 1.4; }
+.comment-item strong{ color: #aaa; font-size: 12px; display: block; margin-bottom: 2px; }
 
-.tag-chip {
-    background: #222;
-    color: #ddd;
-    padding: 8px 16px;
+.comment-input-area{
+    padding: 12px 16px;
+    background: #202020;
+    display: flex;
+    gap: 10px;
+}
+.comment-input{
+    flex: 1;
+    background: #2e2e2e;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 10px 16px;
     border-radius: 20px;
     font-size: 13px;
-    white-space: nowrap;
-    cursor: pointer;
-    border: 1px solid #333;
 }
-.tag-chip.active {
+.send-btn{
     background: var(--primary);
     color: white;
-    border-color: var(--primary);
+    border: none;
+    border-radius: 20px;
+    padding: 0 16px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 /* Upload UI */
@@ -563,16 +366,10 @@ header * { pointer-events: auto; }
     max-height: 250px;
     background: #000;
 }
-
-.preview-container video {
-    width: 100%;
-    max-height: 250px;
-    object-fit: contain;
-}
+.preview-container video { width: 100%; max-height: 250px; object-fit: contain; }
 
 .upload-textarea {
-    width: 100%;
-    height: 90px;
+    width: 100%; height: 90px;
     background: #1c1c1c;
     border: 1px solid #333;
     border-radius: 12px;
@@ -595,157 +392,43 @@ header * { pointer-events: auto; }
 }
 .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
 
-/* Real Google Sign-In Dialog (Official Look) */
-.auth-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(8px);
-    z-index: 70;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
-
-.auth-overlay.active { display: flex; }
-
-.google-auth-box {
-    background: #ffffff;
-    color: #202124;
-    width: 100%;
-    max-width: 400px;
-    border-radius: 12px;
-    padding: 36px 32px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-    text-align: right;
-    position: relative;
-}
-
-.google-header {
+.upload-status {
     text-align: center;
-    margin-bottom: 24px;
-}
-
-.google-header svg {
-    margin-bottom: 12px;
-}
-
-.google-header h3 {
-    font-size: 22px;
-    font-weight: 500;
-    color: #202124;
-    margin-bottom: 6px;
-}
-
-.google-header p {
-    font-size: 14px;
-    color: #5f6368;
-}
-
-.google-input-group {
-    margin-bottom: 16px;
-}
-
-.google-input-group label {
-    display: block;
-    font-size: 12px;
-    color: #1a73e8;
-    margin-bottom: 4px;
-    font-weight: 500;
-}
-
-.google-input {
-    width: 100%;
-    padding: 13px 15px;
-    border: 1px solid #dadce0;
-    border-radius: 4px;
-    font-size: 15px;
-    color: #202124;
-    outline: none;
-    direction: ltr;
-    text-align: left;
-}
-
-.google-input:focus {
-    border-color: #1a73e8;
-    box-shadow: inset 0 0 0 1px #1a73e8;
-}
-
-.google-error {
-    color: #d93025;
-    font-size: 12px;
-    margin-top: 5px;
+    font-size: 13px;
+    color: #00e676;
     display: none;
-}
-
-.google-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 30px;
-}
-
-.btn-cancel-google {
-    background: none;
-    border: none;
-    color: #1a73e8;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.btn-submit-google {
-    background: #1a73e8;
-    color: white;
-    border: none;
-    padding: 9px 24px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.btn-submit-google:hover {
-    background: #1557b0;
 }
 </style>
 </head>
 
 <body>
 
-<!-- Header -->
 <header>
     <div class="logo">FLIX</div>
-    <input class="search-bar" type="text" placeholder="🔎 بحث...">
 </header>
 
-<!-- Main Feed -->
-<div class="feed" id="feed"></div>
+<div class="feed" id="feed">
+    <div class="empty-feed">
+        <span>⏳</span>
+        <h3>جاري تحميل الفيديوهات من السيرفر...</h3>
+    </div>
+</div>
 
-<!-- Bottom Navigation -->
 <div class="bottom-nav">
     <div class="nav-item active" id="navHome" onclick="switchTab('home')">
-        <span>🏠</span>
-        الرئيسية
-    </div>
-    <div class="nav-item" id="navExplore" onclick="switchTab('explore')">
-        <span>🔥</span>
-        استكشاف
+        <span>🏠</span>الرئيسية
     </div>
     <div class="nav-item add-btn" onclick="requireAuthAndOpenUpload()">
         <span>＋</span>
     </div>
-    <div class="nav-item" id="navProfile" onclick="requireAuthAndOpenProfile()">
-        <span>👤</span>
-        حسابي
+    <div class="nav-item" id="navProfile" onclick="handleAuthButtonClick()">
+        <span id="navAuthIcon">👤</span>
+        <span id="navAuthLabel">دخول</span>
     </div>
 </div>
 
-<!-- Comment Sheet -->
 <div class="comment-sheet" id="commentSheet">
-    <div class="sheet-header">
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 20px; border-bottom:1px solid #282828;">
         <h3>التعليقات</h3>
         <button class="close-btn" onclick="closeComments()">✕ إغلاق</button>
     </div>
@@ -756,64 +439,6 @@ header * { pointer-events: auto; }
     </div>
 </div>
 
-<!-- Explore Modal -->
-<div class="full-modal" id="exploreModal">
-    <div class="modal-header">
-        <h2>🔥 استكشاف المحتوى</h2>
-        <button class="close-btn" onclick="switchTab('home')">⬅ رجوع للرئيسية</button>
-    </div>
-
-    <div style="padding: 15px 20px 0;">
-        <input class="search-bar" style="width: 100%; padding: 12px 18px; border-radius: 25px; background: #222;" type="text" placeholder="🔎 ابحث عن فيديوهات، مستخدمين، هاشتاجات..." id="exploreSearch" oninput="filterExplore()">
-    </div>
-
-    <div class="explore-tags">
-        <div class="tag-chip active" onclick="selectTag(this, 'all')">الكل ✨</div>
-        <div class="tag-chip" onclick="selectTag(this, '#تريند')">#تريند 🔥</div>
-        <div class="tag-chip" onclick="selectTag(this, '#ضحك')">#ضحك 😂</div>
-        <div class="tag-chip" onclick="selectTag(this, '#ألعاب')">#ألعاب 🎮</div>
-        <div class="tag-chip" onclick="selectTag(this, '#رياضة')">#رياضة ⚽</div>
-    </div>
-
-    <div class="profile-grid" id="exploreGrid"></div>
-</div>
-
-<!-- Profile Modal -->
-<div class="full-modal" id="profileModal">
-    <div class="modal-header">
-        <h2>الملف الشخصي</h2>
-        <button class="close-btn" onclick="switchTab('home')">⬅ رجوع للرئيسية</button>
-    </div>
-
-    <div class="profile-info">
-        <div class="avatar" id="userAvatar">👤</div>
-        <h2 id="userNameDisplay">@my_account</h2>
-        <p id="userEmailDisplay" style="color:#777; font-size:12px; margin-top:2px;">user@gmail.com</p>
-        
-        <div class="stats">
-            <div class="stat"><b id="userPostCount">0</b><span>فيديوهات</span></div>
-            <div class="stat"><b>0</b><span>المتابعون</span></div>
-            <div class="stat"><b id="userLikesCount">0</b><span>الإعجابات</span></div>
-        </div>
-
-        <div class="profile-actions">
-            <button class="btn-upload-profile" onclick="openUploadModal()">
-                ➕ نشر فيديو جديد
-            </button>
-            <button class="btn-logout" onclick="logoutGoogle()">
-                🚪 تسجيل الخروج
-            </button>
-        </div>
-    </div>
-
-    <div class="profile-tabs">
-        <span>🎬 فيديوهاتي المنشورة</span>
-    </div>
-
-    <div class="profile-grid" id="profileGrid"></div>
-</div>
-
-<!-- Upload Modal -->
 <div class="full-modal" id="uploadModal">
     <div class="modal-header">
         <h2>نشر فيديو جديد</h2>
@@ -826,65 +451,261 @@ header * { pointer-events: auto; }
         <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
             <span style="font-size: 38px; display: block; margin-bottom: 8px;">📹</span>
             <b>اضغط هنا لاختيار فيديو من جهازك</b>
-            <p style="font-size: 12px; color: #888; margin-top: 5px;">يدعم MP4, MOV, WebM</p>
+            <p style="font-size: 12px; color: #888; margin-top: 5px;">سيتم حفظه على السيرفر ومشاركته مع الجميع</p>
         </div>
 
         <div class="preview-container" id="previewContainer">
             <video id="uploadPreview" controls playsinline></video>
         </div>
 
-        <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو مع هاشتاجات (#تريند #فيديو)..."></textarea>
+        <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو (#تريند #فيديو)..."></textarea>
 
-        <button id="publishBtn" class="btn-publish" onclick="publishVideo()" disabled>نشر الآن 🚀</button>
-    </div>
-</div>
-
-<!-- Authentic Google Sign-In Modal -->
-<div class="auth-overlay" id="authModal">
-    <div class="google-auth-box">
-        <div class="google-header">
-            <svg width="40" height="40" viewBox="0 0 48 48">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-            <h3>تسجيل الدخول</h3>
-            <p>للمتابعة واستخدام حسابك على FLIX</p>
-        </div>
-
-        <div class="google-input-group">
-            <label>البريد الإلكتروني على Google</label>
-            <input type="email" id="googleEmailInput" class="google-input" placeholder="example@gmail.com" required>
-            <div class="google-error" id="emailError">يرجى كتابة بريد Gmail صالح (@gmail.com)</div>
-        </div>
-
-        <div class="google-input-group">
-            <label>كلمة المرور</label>
-            <input type="password" id="googlePassInput" class="google-input" placeholder="••••••••" required>
-            <div class="google-error" id="passError">يرجى إدخال كلمة المرور للمتابعة</div>
-        </div>
-
-        <div class="google-footer">
-            <button type="button" class="btn-cancel-google" onclick="closeAuthModal()">إلغاء</button>
-            <button type="button" class="btn-submit-google" onclick="submitGoogleLogin()">التالي</button>
-        </div>
+        <div class="upload-status" id="uploadStatus">جاري رفع الفيديو إلى السحابة... 0%</div>
+        <button id="publishBtn" class="btn-publish" onclick="publishVideoToServer()" disabled>نشر الآن 🚀</button>
     </div>
 </div>
 
 <script>
-// حالة تسجيل الدخول والمستخدم
-let currentUser = JSON.parse(localStorage.getItem('flix_user')) || null;
-
-// قاعدة بيانات الفيديوهات (تبدأ بدون أي بيانات وهمية)
-let posts = [];
+let currentUser = null;
+let allPosts = [];
 let activeVideoId = null;
 let selectedVideoFile = null;
-let currentTagFilter = 'all';
 
-// مراقب تشغيل الفيديو التلقائي
 const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
+        const vid = entry.target;
+        if (entry.isIntersecting) vid.play().catch(()=>{});
+        else { vid.pause(); vid.currentTime = 0; }
+    });
+}, { threshold: 0.6 });
+
+window.initApp = function() {
+    const { onAuthStateChanged, collection, query, orderBy, onSnapshot } = window.fbMethods;
+
+    // متابعة حالة تسجيل الدخول بـ Google
+    onAuthStateChanged(window.auth, (user) => {
+        currentUser = user;
+        const navLabel = document.getElementById('navAuthLabel');
+        if (user) {
+            navLabel.textContent = user.displayName ? user.displayName.split(' ')[0] : 'حسابي';
+        } else {
+            navLabel.textContent = 'دخول';
+        }
+    });
+
+    // جلب الفيديوهات في الوقت الفعلي من قاعدة البيانات (Realtime Sync)
+    const q = query(collection(window.db, "videos"), orderBy("createdAt", "desc"));
+    onSnapshot(q, (snapshot) => {
+        allPosts = [];
+        snapshot.forEach((docSnap) => {
+            allPosts.push({ id: docSnap.id, ...docSnap.data() });
+        });
+        renderFeed();
+    });
+};
+
+function renderFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '';
+
+    if (allPosts.length === 0) {
+        feed.innerHTML = `
+            <div class="empty-feed">
+                <span>🎬</span>
+                <h3>لا توجد فيديوهات حتى الآن</h3>
+                <p>كن أول من ينشر فيديو ويشارك إبداعه على السيرفر!</p>
+            </div>
+        `;
+        return;
+    }
+
+    allPosts.forEach(post => {
+        const card = document.createElement('section');
+        card.className = 'video-card';
+        card.id = post.id;
+        
+        card.innerHTML = `
+            <video class="video-player" loop playsinline preload="metadata" src="${post.videoUrl}"></video>
+            <div class="heart-anim">❤️</div>
+            <div class="content">
+                <div class="user-info"><span class="username">${post.authorName || 'مستخدم'}</span></div>
+                <p class="description">${post.caption || ''}</p>
+            </div>
+            <div class="actions">
+                <button class="action-btn" onclick="toggleLike('${post.id}')">♥</button>
+                <div class="action-label">${post.likes || 0}</div>
+                <button class="action-btn" onclick="openComments('${post.id}')">💬</button>
+                <div class="action-label">${post.comments ? post.comments.length : 0}</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        `;
+
+        const vid = card.querySelector('video');
+        videoObserver.observe(vid);
+
+        vid.ontimeupdate = () => {
+            const fill = card.querySelector('.progress-fill');
+            if (fill && vid.duration) fill.style.width = `${(vid.currentTime / vid.duration) * 100}%`;
+        };
+
+        card.onclick = (e) => {
+            if (e.target.closest('.actions')) return;
+            if (vid.paused) vid.play(); else vid.pause();
+        };
+
+        feed.appendChild(card);
+    });
+}
+
+// تسجيل الدخول الرسمي عبر Google الآمن
+async function handleAuthButtonClick() {
+    if (currentUser) {
+        if (confirm(`أنت مسجل باسم ${currentUser.displayName}. هل تريد تسجيل الخروج؟`)) {
+            await window.fbMethods.signOut(window.auth);
+            alert("تم تسجيل الخروج!");
+        }
+    } else {
+        try {
+            await window.fbMethods.signInWithPopup(window.auth, window.googleProvider);
+            alert("تم تسجيل الدخول بنجاح! 🎉");
+        } catch (err) {
+            alert("حدث خطأ أثناء تسجيل الدخول: " + err.message);
+        }
+    }
+}
+
+function requireAuthAndOpenUpload() {
+    if (!currentUser) {
+        if (confirm("يجب تسجيل الدخول بحساب Google أولاً لتتمكن من النشر. هل تريد تسجيل الدخول الآن؟")) {
+            handleAuthButtonClick();
+        }
+    } else {
+        document.getElementById('uploadModal').classList.add('active');
+    }
+}
+
+function closeUploadModal() {
+    document.getElementById('uploadModal').classList.remove('active');
+    selectedVideoFile = null;
+    document.getElementById('dropzone').style.display = 'block';
+    document.getElementById('previewContainer').style.display = 'none';
+    document.getElementById('publishBtn').disabled = true;
+    document.getElementById('uploadStatus').style.display = 'none';
+}
+
+function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    selectedVideoFile = file;
+    const preview = document.getElementById('uploadPreview');
+    preview.src = URL.createObjectURL(file);
+    document.getElementById('dropzone').style.display = 'none';
+    document.getElementById('previewContainer').style.display = 'block';
+    document.getElementById('publishBtn').disabled = false;
+}
+
+// رفع الفيديو إلى التخزين السحابي وحفظه بقاعدة البيانات
+async function publishVideoToServer() {
+    if (!selectedVideoFile || !currentUser) return;
+
+    const { ref, uploadBytesResumable, getDownloadURL, collection, addDoc } = window.fbMethods;
+    const publishBtn = document.getElementById('publishBtn');
+    const statusText = document.getElementById('uploadStatus');
+
+    publishBtn.disabled = true;
+    statusText.style.display = 'block';
+
+    const fileExt = selectedVideoFile.name.split('.').pop();
+    const fileName = `videos/${Date.now()}_${currentUser.uid}.${fileExt}`;
+    const storageRef = ref(window.storage, fileName);
+
+    const uploadTask = uploadBytesResumable(storageRef, selectedVideoFile);
+
+    uploadTask.on('state_changed', 
+        (snapshot) => {
+            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+            statusText.textContent = `جاري رفع الفيديو إلى السحابة... ${progress}%`;
+        }, 
+        (error) => {
+            alert("فشل رفع الفيديو: " + error.message);
+            publishBtn.disabled = false;
+        }, 
+        async () => {
+            const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+            const caption = document.getElementById('videoCaption').value.trim();
+
+            await addDoc(collection(window.db, "videos"), {
+                videoUrl: downloadUrl,
+                caption: caption,
+                authorName: currentUser.displayName || "مستخدم",
+                authorId: currentUser.uid,
+                likes: 0,
+                comments: [],
+                createdAt: Date.now()
+            });
+
+            alert("تم نشر الفيديو بنجاح على السيرفر! 🚀");
+            closeUploadModal();
+        }
+    );
+}
+
+// التفاعل مع الإعجاب والتعليقات في السيرفر
+async function toggleLike(postId) {
+    const { doc, updateDoc, increment } = window.fbMethods;
+    const postRef = doc(window.db, "videos", postId);
+    await updateDoc(postRef, { likes: increment(1) });
+}
+
+function openComments(postId) {
+    activeVideoId = postId;
+    const post = allPosts.find(p => p.id === postId);
+    if (!post) return;
+
+    const list = document.getElementById('commentsList');
+    list.innerHTML = '';
+    
+    if (!post.comments || post.comments.length === 0) {
+        list.innerHTML = `<div style="text-align:center;color:#666;padding:20px;">كن أول من يعلق!</div>`;
+    } else {
+        post.comments.forEach(c => {
+            const item = document.createElement('div');
+            item.className = 'comment-item';
+            item.innerHTML = `<strong>👤 ${c.user}</strong>${c.text}`;
+            list.appendChild(item);
+        });
+    }
+    document.getElementById('commentSheet').classList.add('show');
+}
+
+function closeComments() {
+    document.getElementById('commentSheet').classList.remove('show');
+}
+
+async function submitComment() {
+    const input = document.getElementById('commentInput');
+    const text = input.value.trim();
+    if (!text || !activeVideoId) return;
+
+    const userName = currentUser ? currentUser.displayName : "زائر";
+    const { doc, updateDoc, arrayUnion } = window.fbMethods;
+
+    await updateDoc(doc(window.db, "videos", activeVideoId), {
+        comments: arrayUnion({ user: userName, text: text, time: Date.now() })
+    });
+
+    input.value = '';
+    openComments(activeVideoId);
+}
+
+function switchTab(tab) {
+    // التنقل البسيط
+}
+</script>
+
+</body>
+</html>entries.forEach(entry => {
         const vid = entry.target;
         if (entry.isIntersecting) {
             vid.play().catch(() => {});
