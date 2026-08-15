@@ -5,12 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FLIX</title>
 
-<!-- Firebase SDKs (Firestore Only) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
 <script>
-  // بيانات الربط الخاصة بمشروعك FLIX
   const firebaseConfig = {
     apiKey: "AIzaSyD1MBM9IK9l5jnrKug3bz1...", 
     authDomain: "flix-5cb84.firebaseapp.com",
@@ -112,8 +111,8 @@ header * { pointer-events: auto; }
 }
 .content * { pointer-events: auto; }
 
-.username{ font-size: 15px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
-.description{ font-size: 13px; max-width: 78%; line-height: 1.4; color: #eee; word-break: break-word; }
+.username{ font-size: 15px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); cursor: pointer; }
+.description{ font-size: 13px; max-width: 78%; line-height: 1.4; color: #eee; word-break: break-word; margin-top: 4px; }
 
 .actions{
     position: absolute; left: 12px; bottom: 95px;
@@ -124,21 +123,23 @@ header * { pointer-events: auto; }
     width: 44px; height: 44px; border-radius: 50%;
     background: var(--primary-gradient);
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px; border: 2px solid white; cursor: pointer; margin-bottom: 6px;
+    font-size: 20px; border: 2px solid white; cursor: pointer; margin-bottom: 4px;
 }
 
 .action-btn{
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(5px);
-    border: none; color: white; font-size: 20px;
+    border: none; color: white; font-size: 22px;
     width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
+    transition: transform 0.2s, color 0.2s;
 }
+.action-btn:active { transform: scale(0.85); }
 .action-btn.liked { color: var(--primary); }
-.action-label{ font-size: 11px; font-weight: 600; margin-top: -10px; }
+.action-label{ font-size: 11px; font-weight: 600; margin-top: -10px; text-shadow: 0 1px 3px #000; }
 
 .progress-bar {
-    position: absolute; bottom: 65px; left: 0;
+    position: absolute; bottom: 60px; left: 0;
     width: 100%; height: 3px; background: rgba(255,255,255,0.2); z-index: 25;
 }
 .progress-fill { height: 100%; width: 0%; background: var(--primary); }
@@ -162,16 +163,25 @@ header * { pointer-events: auto; }
     padding: 3px 16px; border-radius: 12px; font-weight: bold; font-size: 20px;
 }
 
-/* Modals */
-.full-modal{
+/* Modal Windows */
+.full-modal, .bottom-sheet{
     display: none; position: fixed; inset: 0;
-    background: var(--bg-dark); z-index: 55; overflow-y: auto; padding-bottom: 80px;
+    background: var(--bg-dark); z-index: 55; overflow-y: auto;
 }
 .full-modal.active{ display: block; }
 
+.bottom-sheet {
+    inset: auto 0 0 0; height: 60vh;
+    border-radius: 20px 20px 0 0;
+    background: #141414; border-top: 1px solid #282828;
+    z-index: 60; display: flex; flex-direction: column;
+    transform: translateY(100%); transition: transform 0.3s ease;
+}
+.bottom-sheet.active { display: flex; transform: translateY(0); }
+
 .modal-header{
     display: flex; justify-content: space-between; align-items: center;
-    padding: 14px 18px; position: sticky; top: 0; background: var(--bg-dark);
+    padding: 14px 18px; position: sticky; top: 0; background: #141414;
     z-index: 2; border-bottom: 1px solid #222;
 }
 
@@ -180,6 +190,22 @@ header * { pointer-events: auto; }
     padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold;
 }
 
+/* Comments Section */
+.comments-list { flex: 1; overflow-y: auto; padding: 14px 18px; display: flex; flex-direction: column; gap: 12px; }
+.comment-item { font-size: 13px; line-height: 1.4; background: #1e1e1e; padding: 10px 12px; border-radius: 10px; }
+.comment-user { font-weight: bold; color: var(--primary); margin-bottom: 2px; }
+
+.comment-input-box {
+    padding: 12px 18px; border-top: 1px solid #222; display: flex; gap: 8px; background: #141414;
+}
+.comment-input-box input {
+    flex: 1; background: #222; border: none; color: white; padding: 10px 14px; border-radius: 20px; font-size: 13px; outline: none;
+}
+.comment-input-box button {
+    background: var(--primary-gradient); border: none; color: white; padding: 0 16px; border-radius: 20px; font-weight: bold; cursor: pointer;
+}
+
+/* Upload Box */
 .upload-box { max-width: 480px; margin: 25px auto; padding: 0 18px; display: flex; flex-direction: column; gap: 15px; }
 .file-dropzone { border: 2px dashed #444; border-radius: 16px; padding: 30px 16px; text-align: center; cursor: pointer; background: #141414; }
 .preview-container { display: none; border-radius: 12px; overflow: hidden; max-height: 250px; background: #000; }
@@ -187,6 +213,9 @@ header * { pointer-events: auto; }
 .upload-textarea { width: 100%; background: #181818; border: 1px solid #333; border-radius: 12px; color: white; padding: 12px; outline: none; font-size: 14px; height: 80px; resize: none; }
 .btn-publish { background: var(--primary-gradient); border: none; color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer; }
 .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.tab-page { display: none; padding: 80px 20px 20px; text-align: center; }
+.tab-page.active { display: block; }
 </style>
 </head>
 
@@ -194,11 +223,34 @@ header * { pointer-events: auto; }
 
 <header><div class="logo">FLIX</div></header>
 
+<!-- Main Feed -->
 <div class="feed" id="feed"></div>
 
+<!-- Generic Page Views for Bottom Nav -->
+<div class="tab-page" id="explorePage"><h2>🔍 اكتشف المحتوى</h2><p style="color:#888; margin-top:10px;">صفحة الاستكشاف قيد التطوير...</p></div>
+<div class="tab-page" id="notificationsPage"><h2>🔔 الإشعارات</h2><p style="color:#888; margin-top:10px;">لا توجد إشعارات جديدة حالياً.</p></div>
+<div class="tab-page" id="profilePage"><h2>👤 صفحتي الشخصية</h2><p style="color:#888; margin-top:10px;">مرحباً بك في ملفك الشخصي!</p></div>
+
+<!-- Bottom Navigation -->
 <div class="bottom-nav">
     <div class="nav-item active" id="navHome" onclick="switchTab('home')"><span>🏠</span>الرئيسية</div>
+    <div class="nav-item" id="navExplore" onclick="switchTab('explore')"><span>🔍</span>اكتشف</div>
     <div class="nav-item add-btn" onclick="openUploadModal()"><span>＋</span></div>
+    <div class="nav-item" id="navNotif" onclick="switchTab('notif')"><span>🔔</span>الإشعارات</div>
+    <div class="nav-item" id="navProfile" onclick="switchTab('profile')"><span>👤</span>صفحتي</div>
+</div>
+
+<!-- Comments Bottom Sheet -->
+<div class="bottom-sheet" id="commentsSheet">
+    <div class="modal-header">
+        <h3>التعليقات 💬</h3>
+        <button class="close-btn" onclick="closeComments()">✕ إغلاق</button>
+    </div>
+    <div class="comments-list" id="commentsList"></div>
+    <div class="comment-input-box">
+        <input type="text" id="commentInput" placeholder="اكتب تعليقاً...">
+        <button onclick="sendComment()">إرسال</button>
+    </div>
 </div>
 
 <!-- Upload Video Modal -->
@@ -213,7 +265,7 @@ header * { pointer-events: auto; }
         
         <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
             <span style="font-size: 38px; display: block; margin-bottom: 8px;">📹</span>
-            <b style="font-size: 14px;">اضغط هنا لاختيار فيديو من جهازك</b>
+            <b style="font-size: 14px;">اختر فيديو من جهازك</b>
         </div>
 
         <div class="preview-container" id="previewContainer">
@@ -229,6 +281,7 @@ header * { pointer-events: auto; }
 <script>
 let realPosts = [];
 let selectedVideoFile = null;
+let currentCommentPostId = null;
 
 const videoObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -276,13 +329,23 @@ function renderFeed() {
         card.innerHTML = `
             <video class="video-player" loop playsinline src="${post.videoUrl}"></video>
             <div class="content">
-                <div class="username">@${post.authorName || 'مستخدم'}</div>
+                <div class="username" onclick="switchTab('profile')">@${post.authorName || 'مستخدم'}</div>
                 <p class="description">${post.caption || ''}</p>
             </div>
             <div class="actions">
-                <div class="tiktok-avatar">👤</div>
+                <div class="tiktok-avatar" onclick="switchTab('profile')">👤</div>
+                
+                <!-- زر الإعجاب -->
                 <button class="action-btn ${post.isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">♥</button>
                 <div class="action-label">${post.likes || 0}</div>
+
+                <!-- زر التعليقات -->
+                <button class="action-btn" onclick="openComments('${post.id}')">💬</button>
+                <div class="action-label">${(post.comments || []).length}</div>
+
+                <!-- زر المشاركة -->
+                <button class="action-btn" onclick="sharePost('${post.videoUrl}')">🔗</button>
+                <div class="action-label">مشاركة</div>
             </div>
             <div class="progress-bar"><div class="progress-fill"></div></div>
         `;
@@ -298,7 +361,7 @@ function renderFeed() {
         };
 
         card.addEventListener('click', (e) => {
-            if (e.target.closest('.actions')) return;
+            if (e.target.closest('.actions') || e.target.closest('.content')) return;
             if (vid.paused) vid.play(); else vid.pause();
         });
 
@@ -306,13 +369,92 @@ function renderFeed() {
     });
 }
 
+/* --- أزرار التفاعل والإعجابات --- */
 function toggleLike(postId) {
     const post = realPosts.find(p => p.id === postId);
     if (!post) return;
-    const newLikes = (post.likes || 0) + 1;
-    db.collection("videos").doc(postId).update({ likes: newLikes });
+    const isLiked = !post.isLiked;
+    const newLikes = isLiked ? (post.likes || 0) + 1 : Math.max(0, (post.likes || 0) - 1);
+    
+    db.collection("videos").doc(postId).update({ 
+        likes: newLikes,
+        isLiked: isLiked
+    });
 }
 
+function sharePost(url) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url);
+        alert("تم نسخ رابط الفيديو إلى الحافظة! 🔗");
+    } else {
+        alert("رابط الفيديو: " + url);
+    }
+}
+
+/* --- نظام التعليقات --- */
+function openComments(postId) {
+    currentCommentPostId = postId;
+    const post = realPosts.find(p => p.id === postId);
+    const commentsList = document.getElementById('commentsList');
+    commentsList.innerHTML = '';
+
+    const comments = post.comments || [];
+    if (comments.length === 0) {
+        commentsList.innerHTML = '<p style="text-align:center; color:#777; margin-top:20px;">لا توجد تعليقات بعد، كن أول المعلقين!</p>';
+    } else {
+        comments.forEach(c => {
+            const div = document.createElement('div');
+            div.className = 'comment-item';
+            div.innerHTML = `<div class="comment-user">@${c.user}</div><div>${c.text}</div>`;
+            commentsList.appendChild(div);
+        });
+    }
+
+    document.getElementById('commentsSheet').classList.add('active');
+}
+
+function closeComments() {
+    document.getElementById('commentsSheet').classList.remove('active');
+    currentCommentPostId = null;
+}
+
+function sendComment() {
+    const input = document.getElementById('commentInput');
+    const text = input.value.trim();
+    if (!text || !currentCommentPostId) return;
+
+    const post = realPosts.find(p => p.id === currentCommentPostId);
+    const comments = post.comments || [];
+    comments.push({ user: "زائر", text: text });
+
+    db.collection("videos").doc(currentCommentPostId).update({ comments: comments }).then(() => {
+        input.value = '';
+        openComments(currentCommentPostId);
+    });
+}
+
+/* --- التنقل السفلية --- */
+function switchTab(tab) {
+    document.getElementById('feed').style.display = 'none';
+    document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+
+    if (tab === 'home') {
+        document.getElementById('feed').style.display = 'block';
+        document.getElementById('navHome').classList.add('active');
+    } else if (tab === 'explore') {
+        document.getElementById('explorePage').classList.add('active');
+        document.getElementById('navExplore').classList.add('active');
+    } else if (tab === 'notif') {
+        document.getElementById('notificationsPage').classList.add('active');
+        document.getElementById('navNotif').classList.add('active');
+    } else if (tab === 'profile') {
+        document.getElementById('profilePage').classList.add('active');
+        document.getElementById('navProfile').classList.add('active');
+    }
+}
+
+/* --- رفع الفيديوهات --- */
 function openUploadModal() { document.getElementById('uploadModal').classList.add('active'); }
 function closeUploadModal() {
     document.getElementById('uploadModal').classList.remove('active');
@@ -334,202 +476,54 @@ function handleFileSelect(e) {
     document.getElementById('publishBtn').disabled = false;
 }
 
-// الرفع المجاني السريع بدون الحاجة لخدمة Firebase Storage
-function publishVideo() {
+async function publishVideo() {
     if (!selectedVideoFile) return;
 
     const publishBtn = document.getElementById('publishBtn');
     publishBtn.disabled = true;
-    publishBtn.textContent = "جاري رفع الفيديو مجاناً... ⏳";
+    publishBtn.textContent = "جاري رفع الفيديو... ⏳";
 
     const formData = new FormData();
     formData.append('file', selectedVideoFile);
-    formData.append('upload_preset', 'ml_default'); // سيرفر استضافة مجاني سريح للفيديوهات
 
-    fetch('https://api.cloudinary.com/v1_1/demo/video/upload', {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.json())
-    .then(data => {
-        if (data.secure_url) {
+    try {
+        const res = await fetch('https://tmpfiles.org/api/v1/upload', {
+            method: 'POST',
+            body: formData
+        });
+        const data = await res.json();
+
+        if (data.status === 'success' && data.data.url) {
+            const directUrl = data.data.url.replace('tmpfiles.org/', 'tmpfiles.org/dl/');
+            
             const videoId = "vid_" + Date.now();
             const newPost = {
                 id: videoId,
-                videoUrl: data.secure_url,
+                videoUrl: directUrl,
                 caption: document.getElementById('videoCaption').value.trim(),
                 authorName: "صانع محتوى",
                 likes: 0,
+                isLiked: false,
+                comments: [],
                 createdAt: Date.now()
             };
 
-            db.collection("videos").doc(videoId).set(newPost).then(() => {
-                closeUploadModal();
-                alert("تم نشر الفيديو بنجاح وظهر للجميع الآن! 🎉");
-            });
+            await db.collection("videos").doc(videoId).set(newPost);
+            closeUploadModal();
+            alert("تم نشر الفيديو وتفعيل جميع الأزرار بنجاح! 🎉");
         } else {
-            alert("حدث خطأ بسيط في الرفع، جرب فيديو بحجم أصغر.");
-            publishBtn.disabled = false;
-            publishBtn.textContent = "نشر الفيديو 🚀";
+            throw new Error('Upload failed');
         }
-    })
-    .catch(() => {
-        alert("حدث خطأ أثناء الرفع، يرجى المحاولة مرة أخرى.");
+    } catch (err) {
+        alert("حدث خطأ أثناء الرفع، جرب مرة أخرى.");
         publishBtn.disabled = false;
         publishBtn.textContent = "نشر الفيديو 🚀";
-    });
+    }
 }
 </script>
 </body>
 </html>
-play">مرحباً بك في صفحتي على FLIX ✨</div>
-        <div id="profileActionContainer">
-            <button class="profile-btn" id="editProfileBtn" onclick="openEditProfileModal()">✏️ تعديل الحساب</button>
-        </div>
-    </div>
-
-    <div class="profile-stats">
-        <div class="stat-box">
-            <div class="stat-num" id="statVideos">0</div>
-            <div class="stat-lbl">الفيديوهات</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-num" id="statLikes">0</div>
-            <div class="stat-lbl">الإعجابات</div>
-        </div>
-    </div>
-
-    <div class="grid-title" id="profileGridTitle">📹 الفيديوهات المنشورة</div>
-    <div class="video-grid" id="profileVideoGrid"></div>
-</div>
-
-<!-- Bottom Navigation Bar -->
-<div class="bottom-nav">
-    <div class="nav-item active" id="navHome" onclick="switchTab('home')">
-        <span>🏠</span>الرئيسية
-    </div>
-    <div class="nav-item" id="navSearch" onclick="switchTab('search')">
-        <span>🔍</span>بحث
-    </div>
-    <div class="nav-item add-btn" onclick="openUploadModal()">
-        <span>＋</span>
-    </div>
-    <div class="nav-item" id="navProfile" onclick="openMyProfile()">
-        <span>👤</span>صفحتي
-    </div>
-</div>
-
-<!-- Edit Profile Modal -->
-<div class="full-modal" id="editProfileModal">
-    <div class="modal-header">
-        <h2>تعديل البيانات الشخصية</h2>
-        <button class="close-btn" onclick="closeEditProfileModal()">✕ إلغاء</button>
-    </div>
-    <div class="upload-box">
-        <label style="font-size:13px; color:#aaa;">الأيقونة أو الإيموجي:</label>
-        <input type="text" id="editAvatarInput" class="edit-input" maxlength="2" placeholder="مثال: 👤 أو 👑 أو 🚀">
-
-        <label style="font-size:13px; color:#aaa;">الاسم الشخصي:</label>
-        <input type="text" id="editNameInput" class="edit-input" placeholder="اسمك">
-
-        <label style="font-size:13px; color:#aaa;">النبذة التعريفية (Bio):</label>
-        <textarea id="editBioInput" class="upload-textarea" placeholder="اكتب نبذة عنك..."></textarea>
-
-        <button class="btn-publish" onclick="saveProfileData()">💾 حفظ التعديلات</button>
-    </div>
-</div>
-
-<!-- Comments Sheet -->
-<div class="comment-sheet" id="commentSheet">
-    <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 18px; border-bottom:1px solid #282828;">
-        <h3>التعليقات</h3>
-        <button class="close-btn" onclick="closeComments()">✕ إغلاق</button>
-    </div>
-    <div class="comments-list" id="commentsList"></div>
-    <div class="comment-input-area">
-        <input type="text" id="commentInput" class="comment-input" placeholder="اكتب تعليقك هنا..." onkeypress="if(event.key==='Enter') submitComment()">
-        <button class="send-btn" onclick="submitComment()">إرسال</button>
-    </div>
-</div>
-
-<!-- Upload Video Modal -->
-<div class="full-modal" id="uploadModal">
-    <div class="modal-header">
-        <h2>رفع فيديو جديد</h2>
-        <button class="close-btn" onclick="closeUploadModal()">⬅ رجوع</button>
-    </div>
-
-    <div class="upload-box">
-        <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="handleFileSelect(event)">
-        
-        <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
-            <span style="font-size: 38px; display: block; margin-bottom: 8px;">📹</span>
-            <b style="font-size: 14px;">اضغط هنا لاختيار فيديو من جهازك</b>
-            <p style="font-size: 12px; color: #888; margin-top: 5px;">يدعم جميع صيغ الفيديو</p>
-        </div>
-
-        <div class="preview-container" id="previewContainer">
-            <video id="uploadPreview" playsinline autoplay loop></video>
-        </div>
-
-        <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو..."></textarea>
-
-        <button id="publishBtn" class="btn-publish" onclick="publishVideo()" disabled>نشر الفيديو 🚀</button>
-    </div>
-</div>
-
-<script>
-let db;
-let realPosts = [];
-let activeVideoId = null;
-let selectedVideoFile = null;
-let currentTab = 'home';
-let viewedUserName = null; // الحساب المعروض حالياً
-
-let myName = localStorage.getItem('flix_my_name') || "مستخدم جديد";
-let myAvatar = localStorage.getItem('flix_my_avatar') || "👤";
-let myBio = localStorage.getItem('flix_my_bio') || "مرحباً بك في صفحتي على FLIX ✨";
-
-// حل مشكلة كتم الصوت عند عمل ريستارت أو ريفريش للموقع
-function forceUnmuteAudio() {
-    document.querySelectorAll('video').forEach(v => {
-        v.muted = false;
-    });
-    const activeVid = document.querySelector('.video-card video');
-    if (activeVid) {
-        activeVid.muted = false;
-        activeVid.play().catch(()=>{});
-    }
-}
-window.addEventListener('pointerdown', forceUnmuteAudio, { once: true });
-window.addEventListener('touchstart', forceUnmuteAudio, { once: true });
-window.addEventListener('click', forceUnmuteAudio, { once: true });
-
-// Initialize IndexedDB
-const request = indexedDB.open("FlixRealStorageDB", 1);
-request.onupgradeneeded = (e) => {
-    db = e.target.result;
-    if (!db.objectStoreNames.contains("videos")) {
-        db.createObjectStore("videos", { keyPath: "id" });
-    }
-};
-
-request.onsuccess = (e) => {
-    db = e.target.result;
-    loadVideosFromDB();
-};
-
-// تشغيل الفيديو مع الصوت تلقائياً
-const videoObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        const vid = entry.target;
-        if (entry.isIntersecting && currentTab === 'home') {
-            vid.muted = false;
-            vid.play().catch(() => {
-                vid.muted = true;
-                vid.play().then(() => {
-                    // فتح الصوت فوراً عند أول تفاعل
-                    const unmuteOnInteraction = () => {
+         const unmuteOnInteraction = () => {
                         vid.muted = false;
                         window.removeEventListener('click', unmuteOnInteraction);
                         window.removeEventListener('touchstart', unmuteOnInteraction);
