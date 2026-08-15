@@ -5,20 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FLIX</title>
 
+<!-- Firebase SDKs (Firestore Only) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
+<script>
+  // بيانات الربط الخاصة بمشروعك FLIX
+  const firebaseConfig = {
+    apiKey: "AIzaSyD1MBM9IK9l5jnrKug3bz1...", 
+    authDomain: "flix-5cb84.firebaseapp.com",
+    projectId: "flix-5cb84",
+    storageBucket: "flix-5cb84.firebasestorage.app",
+    messagingSenderId: "1042647054588",
+    appId: "1:1042647054588:web:9cdb5314...",
+    measurementId: "G-M162R2EWPC"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+</script>
+
 <style>
 :root {
     --primary: #ff1744;
     --primary-gradient: linear-gradient(45deg, #ff1744, #ff5252);
     --bg-dark: #0a0a0a;
-    --bg-card: #161616;
     --text-main: #ffffff;
     --text-muted: #888888;
 }
 
 *{
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    margin: 0; padding: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -28,19 +46,14 @@ body{
     background: #000;
     color: var(--text-main);
     overflow: hidden;
-    height: 100vh;
-    width: 100vw;
+    height: 100vh; width: 100vw;
 }
 
-/* Header */
 header{
     position: fixed;
     top: 0; left: 0; right: 0;
     height: 55px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0 20px;
+    display: flex; align-items: center; justify-content: center;
     z-index: 30;
     background: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 100%);
     pointer-events: none;
@@ -48,18 +61,14 @@ header{
 header * { pointer-events: auto; }
 
 .logo{
-    font-size: 24px;
-    font-weight: 900;
-    letter-spacing: 2px;
+    font-size: 24px; font-weight: 900; letter-spacing: 2px;
     background: var(--primary-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-/* Feed View */
 .feed{
-    height: 100vh;
-    width: 100%;
+    height: 100vh; width: 100%;
     overflow-y: scroll;
     scroll-snap-type: y mandatory;
     scrollbar-width: none;
@@ -69,545 +78,311 @@ header * { pointer-events: auto; }
 
 .empty-feed {
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    padding: 24px;
-    color: #bbb;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; padding: 24px; color: #bbb;
 }
 .empty-feed span { font-size: 55px; margin-bottom: 12px; }
 .empty-feed h3 { font-size: 18px; margin-bottom: 6px; color: #fff; }
 .empty-feed p { font-size: 13px; color: #888; max-width: 280px; line-height: 1.5; margin-bottom: 18px; }
 .empty-feed .btn-start {
     background: var(--primary-gradient);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(255, 23, 68, 0.4);
+    color: white; border: none; padding: 12px 24px;
+    font-size: 14px; font-weight: bold; border-radius: 25px; cursor: pointer;
 }
 
 .video-card{
     position: relative;
-    height: 100vh;
-    width: 100%;
-    scroll-snap-align: start;
-    scroll-snap-stop: always;
-    display: flex;
-    align-items: flex-end;
-    background: #050505;
-    overflow: hidden;
+    height: 100vh; width: 100%;
+    scroll-snap-align: start; scroll-snap-stop: always;
+    display: flex; align-items: flex-end;
+    background: #050505; overflow: hidden;
 }
 
 .video-player{
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    object-fit: cover;
-    z-index: 1;
-}
-
-.heart-anim {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    font-size: 80px;
-    z-index: 10;
-    pointer-events: none;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s;
-    opacity: 0;
-}
-.heart-anim.pop {
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 1;
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; object-fit: cover; z-index: 1;
 }
 
 .content{
-    position: relative;
-    z-index: 15;
-    width: 100%;
+    position: relative; z-index: 15; width: 100%;
     padding: 20px 16px 85px;
     background: linear-gradient(0deg, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.4) 60%, transparent 100%);
     pointer-events: none;
 }
 .content * { pointer-events: auto; }
 
-.user-info{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 6px;
-    cursor: pointer;
-}
 .username{ font-size: 15px; font-weight: 700; text-shadow: 0 1px 4px rgba(0,0,0,0.8); }
+.description{ font-size: 13px; max-width: 78%; line-height: 1.4; color: #eee; word-break: break-word; }
 
-.description{
-    font-size: 13px;
-    max-width: 78%;
-    line-height: 1.4;
-    color: #eee;
-    word-break: break-word;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-}
-
-/* Actions Bar - TikTok Style */
 .actions{
-    position: absolute;
-    left: 12px;
-    bottom: 95px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    align-items: center;
-    z-index: 20;
+    position: absolute; left: 12px; bottom: 95px;
+    display: flex; flex-direction: column; gap: 14px; align-items: center; z-index: 20;
 }
 
-/* صورة الحساب على الفيديو زي تيك توك */
 .tiktok-avatar {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     background: var(--primary-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    border: 2px solid white;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.6);
-    margin-bottom: 6px;
-    position: relative;
-    transition: transform 0.15s;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; border: 2px solid white; cursor: pointer; margin-bottom: 6px;
 }
-.tiktok-avatar:active { transform: scale(0.9); }
 
 .action-btn{
     background: rgba(0, 0, 0, 0.45);
     backdrop-filter: blur(5px);
-    border: none;
-    color: white;
-    font-size: 20px;
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.15s, color 0.15s;
+    border: none; color: white; font-size: 20px;
+    width: 44px; height: 44px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
 }
-.action-btn:active { transform: scale(0.85); }
 .action-btn.liked { color: var(--primary); }
-
-.action-label{
-    font-size: 11px;
-    font-weight: 600;
-    margin-top: -10px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-}
+.action-label{ font-size: 11px; font-weight: 600; margin-top: -10px; }
 
 .progress-bar {
-    position: absolute;
-    bottom: 65px; left: 0;
-    width: 100%; height: 3px;
-    background: rgba(255,255,255,0.2);
-    z-index: 25;
+    position: absolute; bottom: 65px; left: 0;
+    width: 100%; height: 3px; background: rgba(255,255,255,0.2); z-index: 25;
 }
-.progress-fill {
-    height: 100%; width: 0%;
-    background: var(--primary);
-}
+.progress-fill { height: 100%; width: 0%; background: var(--primary); }
 
-/* Bottom Nav */
 .bottom-nav{
-    position: fixed;
-    bottom: 0; left: 0; right: 0;
-    height: 60px;
-    background: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(10px);
+    position: fixed; bottom: 0; left: 0; right: 0; height: 60px;
+    background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255,255,255,0.08);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 40;
+    display: flex; justify-content: space-around; align-items: center; z-index: 40;
 }
 
 .nav-item{
-    color: var(--text-muted);
-    font-size: 11px;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    transition: color 0.2s;
+    color: var(--text-muted); font-size: 11px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
 }
 .nav-item span{ font-size: 19px; }
 .nav-item.active{ color: white; font-weight: bold; }
 
 .nav-item.add-btn span {
-    background: var(--primary-gradient);
-    color: white;
-    padding: 3px 16px;
-    border-radius: 12px;
-    font-weight: bold;
-    font-size: 20px;
-}
-
-/* Search View */
-.search-view {
-    display: none;
-    height: 100vh;
-    width: 100%;
-    overflow-y: auto;
-    background: var(--bg-dark);
-    padding: 65px 16px 85px;
-}
-.search-view.active { display: block; }
-
-.search-input-box {
-    position: relative;
-    margin-bottom: 20px;
-}
-.search-input {
-    width: 100%;
-    background: #1c1c1c;
-    border: 1px solid #333;
-    border-radius: 25px;
-    color: white;
-    padding: 12px 20px 12px 42px;
-    font-size: 14px;
-    outline: none;
-}
-.search-icon {
-    position: absolute;
-    left: 16px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #888;
-    font-size: 16px;
-}
-
-.users-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.user-search-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: #141414;
-    padding: 12px 14px;
-    border-radius: 14px;
-    cursor: pointer;
-    border: 1px solid #222;
-    transition: background 0.2s;
-}
-.user-search-card:active { background: #202020; }
-.user-search-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-.user-search-avatar {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--primary-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 22px;
-}
-.user-search-name { font-size: 14px; font-weight: bold; }
-.user-search-tag { font-size: 12px; color: var(--text-muted); }
-
-/* Profile View */
-.profile-view {
-    display: none;
-    height: 100vh;
-    width: 100%;
-    overflow-y: auto;
-    background: var(--bg-dark);
-    padding: 65px 16px 90px;
-}
-.profile-view.active { display: block; }
-
-.profile-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    margin-bottom: 16px;
-}
-/* صورة البروفايل المصغرة والأنيقة */
-.profile-avatar {
-    width: 76px; height: 76px;
-    border-radius: 50%;
-    background: var(--primary-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 34px;
-    box-shadow: 0 4px 16px rgba(255, 23, 68, 0.3);
-    margin-bottom: 10px;
-    border: 2px solid #333;
-}
-.profile-name { font-size: 19px; font-weight: 800; margin-bottom: 2px; }
-.profile-tag { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
-.profile-bio { font-size: 13px; color: #ddd; max-width: 300px; line-height: 1.4; margin-bottom: 14px; }
-
-.profile-btn {
-    background: #1f1f1f;
-    border: 1px solid #333;
-    color: white;
-    padding: 7px 20px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 600;
-    cursor: pointer;
-}
-.profile-btn.follow-btn {
-    background: var(--primary-gradient);
-    border: none;
-}
-
-.profile-stats {
-    display: flex;
-    justify-content: space-around;
-    max-width: 300px;
-    margin: 0 auto 16px;
-    border-top: 1px solid #1a1a1a;
-    border-bottom: 1px solid #1a1a1a;
-    padding: 12px 0;
-}
-.stat-box { text-align: center; }
-.stat-num { font-size: 16px; font-weight: bold; }
-.stat-lbl { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-.grid-title {
-    font-size: 14px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.video-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 4px;
-}
-.grid-item {
-    position: relative;
-    aspect-ratio: 9/16;
-    background: #181818;
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-}
-.grid-item video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.grid-meta {
-    position: absolute;
-    bottom: 5px;
-    left: 5px;
-    font-size: 10px;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    gap: 3px;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-}
-.grid-delete-btn {
-    position: absolute;
-    top: 5px;
-    left: 5px;
-    background: rgba(0, 0, 0, 0.75);
-    color: #ff5252;
-    border: none;
-    border-radius: 50%;
-    width: 26px; height: 26px;
-    font-size: 11px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    background: var(--primary-gradient); color: white;
+    padding: 3px 16px; border-radius: 12px; font-weight: bold; font-size: 20px;
 }
 
 /* Modals */
 .full-modal{
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: var(--bg-dark);
-    z-index: 55;
-    overflow-y: auto;
-    padding-bottom: 80px;
+    display: none; position: fixed; inset: 0;
+    background: var(--bg-dark); z-index: 55; overflow-y: auto; padding-bottom: 80px;
 }
 .full-modal.active{ display: block; }
 
 .modal-header{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 18px;
-    position: sticky;
-    top: 0;
-    background: var(--bg-dark);
-    z-index: 2;
-    border-bottom: 1px solid #222;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 18px; position: sticky; top: 0; background: var(--bg-dark);
+    z-index: 2; border-bottom: 1px solid #222;
 }
 
 .close-btn{
-    background: #282828;
-    border: none;
-    color: white;
-    padding: 6px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: bold;
+    background: #282828; border: none; color: white;
+    padding: 6px 14px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: bold;
 }
 
-/* Comments Sheet */
-.comment-sheet{
-    position: fixed;
-    bottom: -100%; left: 0; right: 0;
-    height: 60vh;
-    background: #181818;
-    border-radius: 20px 20px 0 0;
-    z-index: 60;
-    transition: bottom 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
-    display: flex;
-    flex-direction: column;
-}
-.comment-sheet.show{ bottom: 0; }
-
-.comments-list{
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.comment-item{ font-size: 13px; line-height: 1.4; }
-.comment-item strong{ color: #aaa; font-size: 12px; display: block; margin-bottom: 2px; }
-
-.comment-input-area{
-    padding: 12px 16px;
-    background: #202020;
-    display: flex;
-    gap: 10px;
-}
-.comment-input{
-    flex: 1;
-    background: #2e2e2e;
-    border: none;
-    outline: none;
-    color: white;
-    padding: 10px 16px;
-    border-radius: 20px;
-    font-size: 13px;
-}
-.send-btn{
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 0 16px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.upload-box {
-    max-width: 480px;
-    margin: 25px auto;
-    padding: 0 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.file-dropzone {
-    border: 2px dashed #444;
-    border-radius: 16px;
-    padding: 30px 16px;
-    text-align: center;
-    cursor: pointer;
-    background: #141414;
-}
-
-.preview-container {
-    display: none;
-    border-radius: 12px;
-    overflow: hidden;
-    max-height: 250px;
-    background: #000;
-}
+.upload-box { max-width: 480px; margin: 25px auto; padding: 0 18px; display: flex; flex-direction: column; gap: 15px; }
+.file-dropzone { border: 2px dashed #444; border-radius: 16px; padding: 30px 16px; text-align: center; cursor: pointer; background: #141414; }
+.preview-container { display: none; border-radius: 12px; overflow: hidden; max-height: 250px; background: #000; }
 .preview-container video { width: 100%; max-height: 250px; object-fit: contain; }
-
-.upload-textarea, .edit-input {
-    width: 100%;
-    background: #181818;
-    border: 1px solid #333;
-    border-radius: 12px;
-    color: white;
-    padding: 12px;
-    outline: none;
-    font-size: 14px;
-}
-.upload-textarea { height: 80px; resize: none; }
-
-.btn-publish {
-    background: var(--primary-gradient);
-    border: none;
-    color: white;
-    padding: 14px;
-    border-radius: 14px;
-    font-size: 15px;
-    font-weight: bold;
-    cursor: pointer;
-}
+.upload-textarea { width: 100%; background: #181818; border: 1px solid #333; border-radius: 12px; color: white; padding: 12px; outline: none; font-size: 14px; height: 80px; resize: none; }
+.btn-publish { background: var(--primary-gradient); border: none; color: white; padding: 14px; border-radius: 14px; font-size: 15px; font-weight: bold; cursor: pointer; }
 .btn-publish:disabled { opacity: 0.5; cursor: not-allowed; }
 </style>
 </head>
 
 <body>
 
-<header>
-    <div class="logo">FLIX</div>
-</header>
+<header><div class="logo">FLIX</div></header>
 
-<!-- Main Feed -->
 <div class="feed" id="feed"></div>
 
-<!-- Search View (صفحة البحث عن الحسابات) -->
-<div class="search-view" id="searchView">
-    <div class="search-input-box">
-        <input type="text" id="searchInput" class="search-input" placeholder="ابحث عن اسم مستخدم أو حساب..." oninput="handleSearch(this.value)">
-        <span class="search-icon">🔍</span>
-    </div>
-    <div class="grid-title">👥 الحسابات المقترحة</div>
-    <div class="users-list" id="usersList"></div>
+<div class="bottom-nav">
+    <div class="nav-item active" id="navHome" onclick="switchTab('home')"><span>🏠</span>الرئيسية</div>
+    <div class="nav-item add-btn" onclick="openUploadModal()"><span>＋</span></div>
 </div>
 
-<!-- Profile Page View (الصفحة الشخصية) -->
-<div class="profile-view" id="profileView">
-    <div class="profile-card">
-        <div class="profile-avatar" id="profileAvatar">👤</div>
-        <div class="profile-name" id="profileNameDisplay">المستخدم</div>
-        <div class="profile-tag" id="profileTagDisplay">@user</div>
-        <div class="profile-bio" id="profileBioDisplay">مرحباً بك في صفحتي على FLIX ✨</div>
+<!-- Upload Video Modal -->
+<div class="full-modal" id="uploadModal">
+    <div class="modal-header">
+        <h2>رفع فيديو جديد</h2>
+        <button class="close-btn" onclick="closeUploadModal()">⬅ رجوع</button>
+    </div>
+
+    <div class="upload-box">
+        <input type="file" id="videoFileInput" accept="video/*" style="display: none;" onchange="handleFileSelect(event)">
+        
+        <div class="file-dropzone" id="dropzone" onclick="document.getElementById('videoFileInput').click()">
+            <span style="font-size: 38px; display: block; margin-bottom: 8px;">📹</span>
+            <b style="font-size: 14px;">اضغط هنا لاختيار فيديو من جهازك</b>
+        </div>
+
+        <div class="preview-container" id="previewContainer">
+            <video id="uploadPreview" playsinline autoplay loop></video>
+        </div>
+
+        <textarea id="videoCaption" class="upload-textarea" placeholder="اكتب وصفاً للفيديو..."></textarea>
+
+        <button id="publishBtn" class="btn-publish" onclick="publishVideo()" disabled>نشر الفيديو 🚀</button>
+    </div>
+</div>
+
+<script>
+let realPosts = [];
+let selectedVideoFile = null;
+
+const videoObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        const vid = entry.target;
+        if (entry.isIntersecting) {
+            vid.muted = false;
+            vid.play().catch(() => {});
+        } else {
+            vid.pause();
+            vid.currentTime = 0;
+        }
+    });
+}, { threshold: 0.6 });
+
+function loadVideosFromDB() {
+    db.collection("videos").orderBy("createdAt", "desc").onSnapshot((snapshot) => {
+        realPosts = [];
+        snapshot.forEach((doc) => realPosts.push(doc.data()));
+        renderFeed();
+    });
+}
+loadVideosFromDB();
+
+function renderFeed() {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '';
+
+    if (realPosts.length === 0) {
+        feed.innerHTML = `
+            <div class="empty-feed">
+                <span>🎬</span>
+                <h3>لا توجد فيديوهات حتى الآن</h3>
+                <p>اضغط على زر ( ＋ ) في الأسفل لرفع أول فيديو!</p>
+                <button class="btn-start" onclick="openUploadModal()">＋ رفع فيديو الآن</button>
+            </div>
+        `;
+        return;
+    }
+
+    realPosts.forEach((post) => {
+        const card = document.createElement('section');
+        card.className = 'video-card';
+        card.id = post.id;
+
+        card.innerHTML = `
+            <video class="video-player" loop playsinline src="${post.videoUrl}"></video>
+            <div class="content">
+                <div class="username">@${post.authorName || 'مستخدم'}</div>
+                <p class="description">${post.caption || ''}</p>
+            </div>
+            <div class="actions">
+                <div class="tiktok-avatar">👤</div>
+                <button class="action-btn ${post.isLiked ? 'liked' : ''}" onclick="toggleLike('${post.id}')">♥</button>
+                <div class="action-label">${post.likes || 0}</div>
+            </div>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        `;
+
+        const vid = card.querySelector('video');
+        videoObserver.observe(vid);
+
+        vid.ontimeupdate = () => {
+            const fill = card.querySelector('.progress-fill');
+            if (fill && vid.duration) {
+                fill.style.width = `${(vid.currentTime / vid.duration) * 100}%`;
+            }
+        };
+
+        card.addEventListener('click', (e) => {
+            if (e.target.closest('.actions')) return;
+            if (vid.paused) vid.play(); else vid.pause();
+        });
+
+        feed.appendChild(card);
+    });
+}
+
+function toggleLike(postId) {
+    const post = realPosts.find(p => p.id === postId);
+    if (!post) return;
+    const newLikes = (post.likes || 0) + 1;
+    db.collection("videos").doc(postId).update({ likes: newLikes });
+}
+
+function openUploadModal() { document.getElementById('uploadModal').classList.add('active'); }
+function closeUploadModal() {
+    document.getElementById('uploadModal').classList.remove('active');
+    selectedVideoFile = null;
+    document.getElementById('dropzone').style.display = 'block';
+    document.getElementById('previewContainer').style.display = 'none';
+    document.getElementById('publishBtn').disabled = true;
+    document.getElementById('publishBtn').textContent = "نشر الفيديو 🚀";
+}
+
+function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    selectedVideoFile = file;
+    const preview = document.getElementById('uploadPreview');
+    preview.src = URL.createObjectURL(file);
+    document.getElementById('dropzone').style.display = 'none';
+    document.getElementById('previewContainer').style.display = 'block';
+    document.getElementById('publishBtn').disabled = false;
+}
+
+// الرفع المجاني السريع بدون الحاجة لخدمة Firebase Storage
+function publishVideo() {
+    if (!selectedVideoFile) return;
+
+    const publishBtn = document.getElementById('publishBtn');
+    publishBtn.disabled = true;
+    publishBtn.textContent = "جاري رفع الفيديو مجاناً... ⏳";
+
+    const formData = new FormData();
+    formData.append('file', selectedVideoFile);
+    formData.append('upload_preset', 'ml_default'); // سيرفر استضافة مجاني سريح للفيديوهات
+
+    fetch('https://api.cloudinary.com/v1_1/demo/video/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.secure_url) {
+            const videoId = "vid_" + Date.now();
+            const newPost = {
+                id: videoId,
+                videoUrl: data.secure_url,
+                caption: document.getElementById('videoCaption').value.trim(),
+                authorName: "صانع محتوى",
+                likes: 0,
+                createdAt: Date.now()
+            };
+
+            db.collection("videos").doc(videoId).set(newPost).then(() => {
+                closeUploadModal();
+                alert("تم نشر الفيديو بنجاح وظهر للجميع الآن! 🎉");
+            });
+        } else {
+            alert("حدث خطأ بسيط في الرفع، جرب فيديو بحجم أصغر.");
+            publishBtn.disabled = false;
+            publishBtn.textContent = "نشر الفيديو 🚀";
+        }
+    })
+    .catch(() => {
+        alert("حدث خطأ أثناء الرفع، يرجى المحاولة مرة أخرى.");
+        publishBtn.disabled = false;
+        publishBtn.textContent = "نشر الفيديو 🚀";
+    });
+}
+</script>
+</body>
+</html>
+play">مرحباً بك في صفحتي على FLIX ✨</div>
         <div id="profileActionContainer">
             <button class="profile-btn" id="editProfileBtn" onclick="openEditProfileModal()">✏️ تعديل الحساب</button>
         </div>
